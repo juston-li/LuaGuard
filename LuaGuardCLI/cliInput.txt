@@ -1,0 +1,1 @@
+-f 5 "C:\Users\tommy\Desktop\tmp;C:\Users\tommy\Desktop\tmp 2" C:\Users\tommy\Desktop\AST C:\Users\tommy\Desktop\Output "C:\Users\tommy\Desktop\tmp 2\blacklisted;C:\Users\tommy\Desktop\tmp 2\blacklisted.txt" C:\Users\tommy\Desktop\custom.txt
