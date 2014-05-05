@@ -6,17 +6,14 @@
 package guipart1;
 
 import java.awt.Component;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
-//import java.nio.file.Files;
-//import java.util.logging.Level;
-//import java.util.logging.Logger;
-import java.util.Scanner;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -28,10 +25,11 @@ import javax.swing.JOptionPane;
  */
 public class guilua extends javax.swing.JFrame {
 
-  File infilefromlua;
   File outfileafterobfuscation;
   private Component frame;
-
+  private ArrayList<String> arrayListStringBlacklist = new ArrayList<>();
+  private ArrayList<String> arrayListLuaFiles = new ArrayList<>();
+  //private ArrayList<String> arrayListLuaFiles = new ArrayList<>();
   /**
    * Creates new form guilua
    */
@@ -48,13 +46,11 @@ public class guilua extends javax.swing.JFrame {
   // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
   private void initComponents() {
 
-    jFileChooser1 = new javax.swing.JFileChooser();
+    jFileChooserGetLuaFile = new javax.swing.JFileChooser();
     jButton4 = new javax.swing.JButton();
-    jFileChooser2 = new javax.swing.JFileChooser();
+    jFileChooserGetBlackListFile = new javax.swing.JFileChooser();
     jLabel8 = new javax.swing.JLabel();
-    jCheckBox2 = new javax.swing.JCheckBox();
-    jCheckBox3 = new javax.swing.JCheckBox();
-    jCheckBox4 = new javax.swing.JCheckBox();
+    jFileChooserGetLuaFolder = new javax.swing.JFileChooser();
     jPanelLower = new javax.swing.JPanel();
     jLabelLuaIcon = new javax.swing.JLabel();
     jLabelObfuscationOptions = new javax.swing.JLabel();
@@ -69,39 +65,31 @@ public class guilua extends javax.swing.JFrame {
     jButtonGetBlackListFile = new javax.swing.JButton();
     jButtonMakeOutputFile = new javax.swing.JButton();
     jButtonGetLuaFolder = new javax.swing.JButton();
+    jLabelImportLuaFolder = new javax.swing.JLabel();
+    jButtonHelp = new javax.swing.JButton();
+    jLabelPart2ofGetLuaFolderLabel = new javax.swing.JLabel();
+    jCheckBoxLevel1Obfuscate = new javax.swing.JCheckBox();
+    jCheckBoxLevel2Obfuscate = new javax.swing.JCheckBox();
+    jCheckBoxLevel3Obfuscate = new javax.swing.JCheckBox();
     jLabelLuaGuardObfuscatorv10 = new javax.swing.JLabel();
 
-    jFileChooser1.setFileFilter(new LuaCustomFilter());
-    jFileChooser1.addActionListener(new java.awt.event.ActionListener() {
+    jFileChooserGetLuaFile.setFileFilter(new LuaCustomFilter());
+    jFileChooserGetLuaFile.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
-        jFileChooser1ActionPerformed(evt);
+        jFileChooserGetLuaFileActionPerformed(evt);
       }
     });
 
     jButton4.setText("jButton4");
 
-    jFileChooser2.setFileFilter(new TextCustomFilter());
+    jFileChooserGetBlackListFile.setFileFilter(new TextCustomFilter());
 
     jLabel8.setText("Types of Obfuscation");
 
-    jCheckBox2.setText("Name Mangler");
-    jCheckBox2.addActionListener(new java.awt.event.ActionListener() {
+    jFileChooserGetLuaFolder.setFileSelectionMode(javax.swing.JFileChooser.DIRECTORIES_ONLY);
+    jFileChooserGetLuaFolder.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
-        jCheckBox2ActionPerformed(evt);
-      }
-    });
-
-    jCheckBox3.setText("Level 2");
-    jCheckBox3.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
-        jCheckBox3ActionPerformed(evt);
-      }
-    });
-
-    jCheckBox4.setText("Level 3");
-    jCheckBox4.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
-        jCheckBox4ActionPerformed(evt);
+        jFileChooserGetLuaFolderActionPerformed(evt);
       }
     });
 
@@ -113,7 +101,7 @@ public class guilua extends javax.swing.JFrame {
 
     jLabelObfuscationOptions.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
     jLabelObfuscationOptions.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-    jLabelObfuscationOptions.setText("         Obfuscation Options");
+    jLabelObfuscationOptions.setText(" Pre-Obfuscation Tasks");
 
     jLabelGetFileToObfuscate.setText("Get File to Obfuscate");
 
@@ -127,7 +115,7 @@ public class guilua extends javax.swing.JFrame {
     jLabelBottomIconImage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
     jLabelBottomIconImage.setIcon(new javax.swing.ImageIcon(getClass().getResource("/guipart1/DSD-pku-uo.jpg"))); // NOI18N
 
-    jLabelDeveloperCredits.setText("    LuaGuard is a joint project between PKU and UO Software developers");
+    jLabelDeveloperCredits.setText("                                                LuaGuard is a joint project between PKU and UO Software developers");
 
     jButtonObfuscate.setText("Obfuscate");
     jButtonObfuscate.addActionListener(new java.awt.event.ActionListener() {
@@ -175,6 +163,33 @@ public class guilua extends javax.swing.JFrame {
       }
     });
 
+    jLabelImportLuaFolder.setText("Get Entire Lua Folder");
+
+    jButtonHelp.setText("Help");
+
+    jLabelPart2ofGetLuaFolderLabel.setText("      To Obfuscate");
+
+    jCheckBoxLevel1Obfuscate.setText("Level 1 Obfuscation");
+    jCheckBoxLevel1Obfuscate.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jCheckBoxLevel1ObfuscateActionPerformed(evt);
+      }
+    });
+
+    jCheckBoxLevel2Obfuscate.setText("Level 2 Obfuscation");
+    jCheckBoxLevel2Obfuscate.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jCheckBoxLevel2ObfuscateActionPerformed(evt);
+      }
+    });
+
+    jCheckBoxLevel3Obfuscate.setText("Level 3 Obfuscation");
+    jCheckBoxLevel3Obfuscate.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jCheckBoxLevel3ObfuscateActionPerformed(evt);
+      }
+    });
+
     javax.swing.GroupLayout jPanelLowerLayout = new javax.swing.GroupLayout(jPanelLower);
     jPanelLower.setLayout(jPanelLowerLayout);
     jPanelLowerLayout.setHorizontalGroup(
@@ -182,38 +197,60 @@ public class guilua extends javax.swing.JFrame {
       .addGroup(jPanelLowerLayout.createSequentialGroup()
         .addGap(20, 20, 20)
         .addComponent(jLabelLuaIcon)
-        .addGap(24, 24, 24)
-        .addGroup(jPanelLowerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-          .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanelLowerLayout.createSequentialGroup()
+        .addGroup(jPanelLowerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+          .addGroup(jPanelLowerLayout.createSequentialGroup()
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
             .addGroup(jPanelLowerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-              .addComponent(jButtonMakeOutputFile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-              .addComponent(jButtonObfuscate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addGroup(jPanelLowerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-              .addComponent(jButtonExitProgram, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE)
-              .addComponent(jTextFieldMakeOutputFile)))
-          .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanelLowerLayout.createSequentialGroup()
-            .addGroup(jPanelLowerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-              .addComponent(jLabelObfuscationOptions, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
-              .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanelLowerLayout.createSequentialGroup()
-                .addComponent(jLabelGetFileToObfuscate, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+              .addGroup(jPanelLowerLayout.createSequentialGroup()
+                .addGroup(jPanelLowerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                  .addComponent(jButtonMakeOutputFile, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)
+                  .addComponent(jButtonObfuscate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabelGetBlackListFile))
-              .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanelLowerLayout.createSequentialGroup()
-                .addComponent(jButtonGetLuaFile, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButtonGetLuaFolder, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButtonGetBlackListFile, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)))
-            .addGap(0, 168, Short.MAX_VALUE)))
-        .addGap(76, 76, 76))
-      .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelLowerLayout.createSequentialGroup()
-        .addContainerGap()
-        .addComponent(jLabelDeveloperCredits, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        .addContainerGap())
+                .addGroup(jPanelLowerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                  .addGroup(jPanelLowerLayout.createSequentialGroup()
+                    .addComponent(jButtonHelp, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(18, 18, 18)
+                    .addComponent(jButtonExitProgram, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                  .addComponent(jTextFieldMakeOutputFile)))
+              .addGroup(jPanelLowerLayout.createSequentialGroup()
+                .addGroup(jPanelLowerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                  .addComponent(jLabelGetFileToObfuscate, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
+                  .addComponent(jButtonGetLuaFile, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanelLowerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                  .addGroup(jPanelLowerLayout.createSequentialGroup()
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanelLowerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                      .addComponent(jLabelImportLuaFolder, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
+                      .addGroup(jPanelLowerLayout.createSequentialGroup()
+                        .addComponent(jLabelPart2ofGetLuaFolderLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabelGetBlackListFile, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                  .addGroup(jPanelLowerLayout.createSequentialGroup()
+                    .addGap(6, 6, 6)
+                    .addComponent(jButtonGetLuaFolder, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jButtonGetBlackListFile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+            .addGap(31, 31, 31))
+          .addGroup(jPanelLowerLayout.createSequentialGroup()
+            .addGroup(jPanelLowerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+              .addGroup(jPanelLowerLayout.createSequentialGroup()
+                .addGap(101, 101, 101)
+                .addComponent(jLabelObfuscationOptions, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE))
+              .addGroup(jPanelLowerLayout.createSequentialGroup()
+                .addGap(18, 18, 18)
+                .addComponent(jCheckBoxLevel1Obfuscate))
+              .addGroup(jPanelLowerLayout.createSequentialGroup()
+                .addGap(18, 18, 18)
+                .addComponent(jCheckBoxLevel2Obfuscate))
+              .addGroup(jPanelLowerLayout.createSequentialGroup()
+                .addGap(18, 18, 18)
+                .addComponent(jCheckBoxLevel3Obfuscate)))
+            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
       .addGroup(jPanelLowerLayout.createSequentialGroup()
         .addContainerGap()
-        .addComponent(jLabelBottomIconImage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        .addGroup(jPanelLowerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+          .addComponent(jLabelDeveloperCredits, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+          .addComponent(jLabelBottomIconImage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         .addContainerGap())
     );
     jPanelLowerLayout.setVerticalGroup(
@@ -221,26 +258,44 @@ public class guilua extends javax.swing.JFrame {
       .addGroup(jPanelLowerLayout.createSequentialGroup()
         .addContainerGap()
         .addGroup(jPanelLowerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-          .addComponent(jLabelLuaIcon, javax.swing.GroupLayout.DEFAULT_SIZE, 361, Short.MAX_VALUE)
+          .addComponent(jLabelLuaIcon, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
           .addGroup(jPanelLowerLayout.createSequentialGroup()
             .addComponent(jLabelObfuscationOptions)
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addGroup(jPanelLowerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-              .addComponent(jLabelGetFileToObfuscate)
-              .addComponent(jLabelGetBlackListFile))
-            .addGap(9, 9, 9)
-            .addGroup(jPanelLowerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-              .addComponent(jButtonGetLuaFile)
-              .addComponent(jButtonGetBlackListFile)
-              .addComponent(jButtonGetLuaFolder))
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanelLowerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+              .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelLowerLayout.createSequentialGroup()
+                .addGroup(jPanelLowerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                  .addGroup(jPanelLowerLayout.createSequentialGroup()
+                    .addComponent(jLabelGetBlackListFile)
+                    .addGap(9, 9, 9))
+                  .addGroup(jPanelLowerLayout.createSequentialGroup()
+                    .addGap(18, 18, 18)
+                    .addComponent(jLabelImportLuaFolder)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabelPart2ofGetLuaFolderLabel)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
+                .addGroup(jPanelLowerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                  .addComponent(jButtonGetBlackListFile)
+                  .addComponent(jButtonGetLuaFolder)))
+              .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelLowerLayout.createSequentialGroup()
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabelGetFileToObfuscate)
+                .addGap(9, 9, 9)
+                .addComponent(jButtonGetLuaFile)))
+            .addGap(18, 18, 18)
+            .addComponent(jCheckBoxLevel1Obfuscate)
+            .addGap(18, 18, 18)
+            .addComponent(jCheckBoxLevel2Obfuscate)
+            .addGap(18, 18, 18)
+            .addComponent(jCheckBoxLevel3Obfuscate)
+            .addGap(68, 68, 68)
             .addGroup(jPanelLowerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
               .addComponent(jTextFieldMakeOutputFile, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
               .addComponent(jButtonMakeOutputFile))
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
             .addGroup(jPanelLowerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
               .addComponent(jButtonObfuscate)
-              .addComponent(jButtonExitProgram))
+              .addComponent(jButtonExitProgram)
+              .addComponent(jButtonHelp))
             .addGap(25, 25, 25)))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addComponent(jLabelDeveloperCredits, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -258,39 +313,19 @@ public class guilua extends javax.swing.JFrame {
     getContentPane().setLayout(layout);
     layout.setHorizontalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addComponent(jPanelLower, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
       .addComponent(jLabelLuaGuardObfuscatorv10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+      .addComponent(jPanelLower, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
     );
     layout.setVerticalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(layout.createSequentialGroup()
         .addComponent(jLabelLuaGuardObfuscatorv10, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addComponent(jPanelLower, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        .addComponent(jPanelLower, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
     );
 
     pack();
   }// </editor-fold>//GEN-END:initComponents
-
-  private void jCheckBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox2ActionPerformed
-
-    if (jCheckBox2.isSelected()) {
-      System.out.println("Name Mangler CheckBox Selected");
-    } else {
-      System.out.println("Name Mangler CheckBox Unchecked");
-    }
-
-
-  }//GEN-LAST:event_jCheckBox2ActionPerformed
-
-  private void jCheckBox3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox3ActionPerformed
-    if (jCheckBox3.isSelected()) {
-      System.out.println("Level 2 Obfuscation CheckBox Selected");
-    } else {
-      System.out.println("Level 2 Obfuscation CheckBox Unchecked");
-    }
-
-  }//GEN-LAST:event_jCheckBox3ActionPerformed
 
   private void jButtonExitProgramActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExitProgramActionPerformed
     System.out.println("Exit Button Pressed");
@@ -298,49 +333,22 @@ public class guilua extends javax.swing.JFrame {
   }//GEN-LAST:event_jButtonExitProgramActionPerformed
 
   private void jButtonGetLuaFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGetLuaFileActionPerformed
-    System.out.println("Get file pressed");
+    //System.out.println("Get file pressed");
 
-    int returnVal = jFileChooser1.showOpenDialog(this);
+    this.arrayListLuaFiles.clear();
+
+    int returnVal = jFileChooserGetLuaFile.showOpenDialog(this);
     if (returnVal == JFileChooser.APPROVE_OPTION) {
-      this.infilefromlua = jFileChooser1.getSelectedFile();
-      System.out.println(("The filename is " + infilefromlua.getName()));
+      this.arrayListLuaFiles.add(jFileChooserGetLuaFile.getSelectedFile().getName());
 
-      System.out.println("The File Selected is " + infilefromlua);
-       // Do obfuscation with file
-
+      //System.out.println(("The filename is " + jFileChooserGetLuaFile.getSelectedFile().getName()));
+      //System.out.println("The File Selected is " + jFileChooserGetLuaFile.getSelectedFile().getName());
+      // Do obfuscation with file
     } else {
       System.out.println("File access cancelled by user.");
-
-//      File root = new File(path);
-//      File[] list = root.listFiles();
-//
-//      if (list == null) {
-//        return;
-//      }
-//
-//      for (File f : list) {
-//        if (f.isDirectory()) {
-//          walk(f.getAbsolutePath());
-//          System.out.println("Dir:" + f.getAbsoluteFile());
-//        } else {
-//          System.out.println("File:" + f.getAbsoluteFile());
-//        }
-//      }
     }
-
 
   }//GEN-LAST:event_jButtonGetLuaFileActionPerformed
-
-  private void jCheckBox4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox4ActionPerformed
-
-    if (jCheckBox4.isSelected()) {
-      System.out.println("Level 3 Obfuscation CheckBox Selected");
-    } else {
-      System.out.println("Level 3 Obfuscation CheckBox Unchecked");
-    }
-
-  }//GEN-LAST:event_jCheckBox4ActionPerformed
-
 
   private void jButtonObfuscateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonObfuscateActionPerformed
     System.out.println("Obfuscate Button Pressed");
@@ -356,21 +364,150 @@ public class guilua extends javax.swing.JFrame {
     //jTextField1.setText("Obfuscated_"+infilefromlua);
   }//GEN-LAST:event_jTextFieldMakeOutputFileActionPerformed
 
+  private void jFileChooserGetLuaFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFileChooserGetLuaFileActionPerformed
+    //String outfilenamefromuserinput = jTextFieldMakeOutputFile.getText();
+    //System.out.println("Output FileName = " + outfilenamefromuserinput);
+    //jTextField1.setText("Obfuscated_"+infilefromlua.getName());
+  }//GEN-LAST:event_jFileChooserGetLuaFileActionPerformed
+
+  private void jButtonMakeOutputFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonMakeOutputFileActionPerformed
+    //String outfilenamefromuserinput = jTextField1.getText();
+    //System.out.println("Output FileName = " + outfilenamefromuserinput);
+
+    if ((this.arrayListLuaFiles.size() > 0)
+            && (this.arrayListStringBlacklist.size() > 0)) {
+
+      for (int intIndex = 0; intIndex < this.arrayListLuaFiles.size(); intIndex++) {
+        String stringforoutputfilename = "Obfuscated_" + this.arrayListLuaFiles.get(intIndex);
+        jTextFieldMakeOutputFile.setText(stringforoutputfilename);
+      }
+
+      Integer integerSize = this.arrayListLuaFiles.size();
+
+      if (integerSize == 1) {
+
+        jTextFieldMakeOutputFile.setText(this.arrayListLuaFiles.get(0).toString() + " was loaded.");
+      } else {
+        jTextFieldMakeOutputFile.setText(integerSize.toString() + " Lua Files were loaded.");
+      }
+    } else {
+      if (this.arrayListLuaFiles.size() < 1) {
+        JOptionPane.showMessageDialog(null,
+                "Error! Please select one or more Lua Files",
+                "Error!",
+                JOptionPane.ERROR_MESSAGE);
+        return;
+      }
+
+      if (this.arrayListStringBlacklist.size() < 1) {
+        JOptionPane.showMessageDialog(null,
+                "Error! Please select a Blacklist File",
+                "Error!",
+                JOptionPane.ERROR_MESSAGE);
+        return;
+      }
+    }
+  }//GEN-LAST:event_jButtonMakeOutputFileActionPerformed
+
+  public void getClassFolders(File file, ArrayList<String> fileNames) {
+    for (File child : file.listFiles()) {
+      if (child.isDirectory()) {
+        getClassFolders(child, fileNames);
+      } else if (child.getName().endsWith(".lua")) {
+        fileNames.add(child.getName());
+
+      }
+    }
+    //System.out.println("fileNames Size is: " + fileNames.size());
+    //for (String fileName : fileNames) {
+    //  System.out.println(fileName);
+    //}
+  }
+
+  private void jButtonGetLuaFolderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGetLuaFolderActionPerformed
+    //System.out.println("Get Lua Folder pressed");
+
+    this.arrayListLuaFiles.clear();
+
+    int returnVal = jFileChooserGetLuaFolder.showOpenDialog(this);
+
+    if (returnVal == JFileChooser.APPROVE_OPTION) {
+
+      File fileSelectedDirectory = jFileChooserGetLuaFolder.getSelectedFile();
+
+      getClassFolders(fileSelectedDirectory, arrayListLuaFiles);
+      //"breakpoint".toString();
+    } else {
+      System.out.println("File access cancelled by user.");
+    }
+  }//GEN-LAST:event_jButtonGetLuaFolderActionPerformed
+
+  private void jFileChooserGetLuaFolderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFileChooserGetLuaFolderActionPerformed
+    // TODO add your handling code here:
+  }//GEN-LAST:event_jFileChooserGetLuaFolderActionPerformed
+
   private void jButtonGetBlackListFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGetBlackListFileActionPerformed
 
-    System.out.println("Get Black List File pressed");
+    this.arrayListStringBlacklist.clear();
 
-    int returnVal = jFileChooser2.showOpenDialog(this);
+    //System.out.println("Get Black List File pressed");
+    int returnVal = jFileChooserGetBlackListFile.showOpenDialog(this);
     if (returnVal == JFileChooser.APPROVE_OPTION) {
-      File infile = jFileChooser2.getSelectedFile();
+      File infile = jFileChooserGetBlackListFile.getSelectedFile();
 
-      System.out.println(("The filename is " + infile.getName()));
-      System.out.println("The Black List File Selected is " + infile);
-
+      //System.out.println(("The filename is " + infile.getName()));
+      //System.out.println("The Black List File Selected is " + infile);
       try {
-        String contents = "The BLACKLIST IS COMPRISED OF: " + new Scanner(infile).useDelimiter("\\Z").next();
-        System.out.println("blacklist: " + contents);
-        JOptionPane.showMessageDialog(frame, contents);
+        String stringTextLine;
+
+        BufferedReader bufferedReaderReference
+                = new BufferedReader(new FileReader(infile));
+
+        arrayListStringBlacklist.clear();
+
+        FileWriter fileWriterReference = null;
+        BufferedWriter bufferedWriterReference = null;
+
+        try {
+          fileWriterReference = new FileWriter(infile.getName().replace(".txt", "") + "_output.txt");
+        } catch (IOException ex) {
+          Logger.getLogger(guilua.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        bufferedWriterReference = new BufferedWriter(fileWriterReference);
+
+        if (bufferedWriterReference == null) {
+          return;
+        }
+
+        try {
+          while ((stringTextLine = bufferedReaderReference.readLine()) != null) {
+            if (stringTextLine.contains(" ") == true) {
+              String contents = "Invalid file format. Words must not have spaces";
+              //System.out.println("blacklist: " + contents);
+              JOptionPane.showMessageDialog(frame, contents);
+              System.out.println("Invalid file format. Words must not have spaces.");
+              arrayListStringBlacklist.clear();
+              break;
+            }
+
+            if (stringTextLine.trim().length() > 0) {
+              arrayListStringBlacklist.add(stringTextLine.trim());
+              bufferedWriterReference.write(stringTextLine.trim() + "\r\n");
+            }
+          }
+
+          //System.out.println("arrayListStringBlacklist size is: " + arrayListStringBlacklist.size());
+          //System.out.println(arrayListStringBlacklist);
+        } catch (IOException ex) {
+          Logger.getLogger(guilua.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        try {
+          bufferedWriterReference.close();
+        } catch (IOException ex) {
+          Logger.getLogger(guilua.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
       } catch (FileNotFoundException ex) {
         Logger.getLogger(guilua.class.getName()).log(Level.SEVERE, null, ex);
@@ -380,34 +517,31 @@ public class guilua extends javax.swing.JFrame {
       System.out.println("File access cancelled by user.");
     }
 
-
   }//GEN-LAST:event_jButtonGetBlackListFileActionPerformed
 
-  private void jFileChooser1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFileChooser1ActionPerformed
-    String outfilenamefromuserinput = jTextFieldMakeOutputFile.getText();
-    System.out.println("Output FileName = " + outfilenamefromuserinput);
-    //jTextField1.setText("Obfuscated_"+infilefromlua.getName());
-  }//GEN-LAST:event_jFileChooser1ActionPerformed
-
-  private void jButtonMakeOutputFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonMakeOutputFileActionPerformed
-    //String outfilenamefromuserinput = jTextField1.getText();
-    //System.out.println("Output FileName = " + outfilenamefromuserinput);
-
-    if (infilefromlua == null) {
-      JOptionPane.showMessageDialog(null,
-              "Error! Please press the \"Get Lua File\" button first",
-              "Error!",
-              JOptionPane.ERROR_MESSAGE);
-      return;
+  private void jCheckBoxLevel1ObfuscateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxLevel1ObfuscateActionPerformed
+    if (jCheckBoxLevel1Obfuscate.isSelected()) {
+      System.out.println("Level 1 Obfuscation CheckBox Selected");
+    } else {
+      System.out.println("Level 1 Obfuscation CheckBox Unchecked");
     }
+  }//GEN-LAST:event_jCheckBoxLevel1ObfuscateActionPerformed
 
-    String stringforoutputfilename = "Obfuscated_" + infilefromlua.getName();
-    jTextFieldMakeOutputFile.setText(stringforoutputfilename);
-  }//GEN-LAST:event_jButtonMakeOutputFileActionPerformed
+  private void jCheckBoxLevel2ObfuscateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxLevel2ObfuscateActionPerformed
+    if (jCheckBoxLevel2Obfuscate.isSelected()) {
+      System.out.println("Level 2 Obfuscation CheckBox Selected");
+    } else {
+      System.out.println("Level 2 Obfuscation CheckBox Unchecked");
+    }
+  }//GEN-LAST:event_jCheckBoxLevel2ObfuscateActionPerformed
 
-  private void jButtonGetLuaFolderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGetLuaFolderActionPerformed
-    // TODO add your handling code here:
-  }//GEN-LAST:event_jButtonGetLuaFolderActionPerformed
+  private void jCheckBoxLevel3ObfuscateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxLevel3ObfuscateActionPerformed
+    if (jCheckBoxLevel3Obfuscate.isSelected()) {
+      System.out.println("Level 3 Obfuscation CheckBox Selected");
+    } else {
+      System.out.println("Level 3 Obfuscation CheckBox Unchecked");
+    }
+  }//GEN-LAST:event_jCheckBoxLevel3ObfuscateActionPerformed
 
   /**
    * @param args the command line arguments
@@ -416,7 +550,7 @@ public class guilua extends javax.swing.JFrame {
     /* Set the Nimbus look and feel */
     //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-     * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+     * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
      */
     try {
       for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -450,21 +584,25 @@ public class guilua extends javax.swing.JFrame {
   private javax.swing.JButton jButtonGetBlackListFile;
   private javax.swing.JButton jButtonGetLuaFile;
   private javax.swing.JButton jButtonGetLuaFolder;
+  private javax.swing.JButton jButtonHelp;
   private javax.swing.JButton jButtonMakeOutputFile;
   private javax.swing.JButton jButtonObfuscate;
-  private javax.swing.JCheckBox jCheckBox2;
-  private javax.swing.JCheckBox jCheckBox3;
-  private javax.swing.JCheckBox jCheckBox4;
-  private javax.swing.JFileChooser jFileChooser1;
-  private javax.swing.JFileChooser jFileChooser2;
+  private javax.swing.JCheckBox jCheckBoxLevel1Obfuscate;
+  private javax.swing.JCheckBox jCheckBoxLevel2Obfuscate;
+  private javax.swing.JCheckBox jCheckBoxLevel3Obfuscate;
+  private javax.swing.JFileChooser jFileChooserGetBlackListFile;
+  private javax.swing.JFileChooser jFileChooserGetLuaFile;
+  private javax.swing.JFileChooser jFileChooserGetLuaFolder;
   private javax.swing.JLabel jLabel8;
   private javax.swing.JLabel jLabelBottomIconImage;
   private javax.swing.JLabel jLabelDeveloperCredits;
   private javax.swing.JLabel jLabelGetBlackListFile;
   private javax.swing.JLabel jLabelGetFileToObfuscate;
+  private javax.swing.JLabel jLabelImportLuaFolder;
   private javax.swing.JLabel jLabelLuaGuardObfuscatorv10;
   private javax.swing.JLabel jLabelLuaIcon;
   private javax.swing.JLabel jLabelObfuscationOptions;
+  private javax.swing.JLabel jLabelPart2ofGetLuaFolderLabel;
   private javax.swing.JPanel jPanelLower;
   private javax.swing.JTextField jTextFieldMakeOutputFile;
   // End of variables declaration//GEN-END:variables

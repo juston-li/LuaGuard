@@ -1,0 +1,6 @@
+word
+test
+space in
+bla
+with
+list
