@@ -101,7 +101,7 @@ public class CLI {
 		return null;		
 	}
 	public static void main(String[] args) {
-		
+
 		if(args.length > 0){
 			
 			if(4 <= args.length && args.length <= 6){
@@ -129,20 +129,21 @@ public class CLI {
 						customNameList = (path != null)? FS.getFile(path) : null;
 						customNameMap = populateCustomlist(customNameList);
 					}
-					
-					demo(levels, luaSource, astOutputDir, outputSource, blacklist, customNameList);
-					
-					String tmpPath = "luamin" + File.separator + "node_modules" + File.separator + ".bin" + File.separator;
-					String windowsOnlyFileExtension = "";
-					if(System.getProperty("os.name").contains("Windows")){
-						windowsOnlyFileExtension = ".cmd";
+
+					String node = "node";
+
+					if(System.getProperty("os.name").contains("Linux")){
+						node = "nodejs";
 					}
+					//String minPath = "luamin" + File.separator + "bin" + File.separator;
+					String path = "luamin" + File.separator + "node_modules" + File.separator + "luaparse" + File.separator + "bin" + File.separator;// + windowsOnlyFileExtension;
 					ProcessBuilder p;
 					for(File f : luaSource){
-						p = new ProcessBuilder(tmpPath+"luaparse"+windowsOnlyFileExtension,"-f",f.getAbsolutePath());
+						p = new ProcessBuilder(node, path+"luaparse", "-f", f.getAbsolutePath());
 						p.redirectOutput(new File(astOutputDir + File.separator + FS.getFileNameWithoutExtension(f) + ".ast"));
 						p.start();
 					}
+					demo(levels, luaSource, astOutputDir, outputSource, blacklist, customNameList);
 				}
 				
 				catch(NumberFormatException e){
@@ -246,6 +247,7 @@ public class CLI {
 		System.out.println("\n\n");
 		System.out.println("Output Lua Source");
 		System.out.println("\t" + outputSource.getAbsolutePath().toString());
+
 		
 		if(blacklist != null){			
 			System.out.println("\n\n");
