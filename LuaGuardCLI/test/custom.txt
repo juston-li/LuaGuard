@@ -1,0 +1,2 @@
+C:\temp\luasourceinput\lua1.lua newLua1
+C:\temp\luasourceinput\lua2.lua newLua2

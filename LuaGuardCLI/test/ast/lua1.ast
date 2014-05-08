@@ -1,0 +1,2 @@
+{"type":"Chunk","body":[],"comments":[]}
+{"type":"Chunk","body":[{"type":"AssignmentStatement","variables":[{"type":"Identifier","name":"i"}],"init":[{"type":"NumericLiteral","value":0,"raw":"0"}]}],"comments":[]}
