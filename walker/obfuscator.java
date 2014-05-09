@@ -1,5 +1,10 @@
-// javac -Xlint -cp ~/Documents/javax.json-api-1.0.jar:. obfuscator.java
-// java -cp ~/Documents/javax.json-1.0.4.jar:. obfuscator
+// read javax.json documentation at docs.oracle.com/javaee/7/api/javax/json/package-summary.html
+//
+// to compile add javax.json-api-1.0.jar to the classpath
+// example: javac -Xlint -cp ~/Documents/javax.json-api-1.0.jar:. obfuscator.java
+//
+// to run add javax.json-1.0.4.jar to the classpath
+// example: java -cp ~/Documents/javax.json-1.0.4.jar:. obfuscator
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -33,10 +38,79 @@ public class obfuscator{
 	private JsonObject ast;
 	private JsonObject obfuscated_ast;
 	private char[] letters = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
-	private Map<String, String> ht;
+    private Map<String, String> ht;
 
-	// prints formated ast
-	private void obf0(JsonValue tree, String key, JsonObjectBuilder obj, JsonArrayBuilder arr, JsonBuilderFactory fac){
+//	// prints formated ast
+//	private void obf0(JsonValue tree, String key, JsonObjectBuilder obj, JsonArrayBuilder arr, JsonBuilderFactory fac){
+//		JsonObjectBuilder subObj;
+//		JsonArrayBuilder subArr;
+//		switch (tree.getValueType()){
+//			case OBJECT:
+//				JsonObject object = (JsonObject)tree;
+//				for (String name:object.keySet())
+//					obf0(object.get(name), name, obj, arr, fac);
+//				break;
+//			case ARRAY:
+//				JsonArray array = (JsonArray)tree;
+//				System.out.println(key+" : ");
+//				subArr = fac.createArrayBuilder();
+//				subObj = fac.createObjectBuilder();
+//				for (JsonValue val:array){
+//					obf0(val, null, subObj, subArr, fac);
+//				}
+//				obj.add(key,subArr);
+//				break;
+//			case STRING:
+//				JsonString jstr = (JsonString)tree;
+//				String str = jstr.toString();
+//
+//				if(key.equals("name") && !check_blacklist(str)){
+//					// check if mapped already
+//					if (check_mangled(str)){
+//						//System.out.println(str+" mapped to "+ht.get(str));
+//						// use mapped name
+//						System.out.println(key+" : "+ht.get(str));
+//						obj.add(key,ht.get(str));
+//                        if(arr != null)
+//                            arr.add(obj);
+//						break;
+//					} else {
+//						// map to new name
+//						String temp = getObfuscatedName();
+//						// System.out.println("key: "+key+"\t"+str+" map to "+temp);
+//						ht.put(str,temp);
+//						// convert String to JsonString
+//						System.out.println(key+" : "+temp);
+//						obj.add(key,temp);
+//                        if(arr != null)
+//                            arr.add(obj);
+//						break;
+//					}
+//				}
+//				System.out.println(key+" : "+str);
+//				obj.add(key,jstr);
+//                if(arr != null)
+//                    arr.add(obj);
+//				break;
+//			case NUMBER:
+//				JsonNumber num = (JsonNumber)tree;
+//				System.out.println(key+" : "+num.toString());
+//				obj.add(key,num);
+//                if(arr != null)
+//                    arr.add(obj);
+//				break;
+//			case TRUE:
+//			case FALSE:
+//			case NULL:
+//				System.out.println(key+" : "+tree.getValueType().toString());
+//				obj.add(key,tree);
+//                if(arr != null)
+//                    arr.add(obj);
+//				break;
+//		}
+//	}
+
+	private JsonObjectBuilder obf0(JsonValue tree, String key, JsonObjectBuilder obj, JsonArrayBuilder arr, JsonBuilderFactory fac){
 		JsonObjectBuilder subObj;
 		JsonArrayBuilder subArr;
 		switch (tree.getValueType()){
@@ -44,31 +118,29 @@ public class obfuscator{
 				JsonObject object = (JsonObject)tree;
 				for (String name:object.keySet())
 					obf0(object.get(name), name, obj, arr, fac);
-				break;
+                return obj;
 			case ARRAY:
 				JsonArray array = (JsonArray)tree;
 				System.out.println(key+" : ");
 				subArr = fac.createArrayBuilder();
 				subObj = fac.createObjectBuilder();
 				for (JsonValue val:array){
-					obf0(val, null, subObj, subArr, fac);
+					subArr.add(obf0(val, null, subObj, subArr, fac));
 				}
-				obj.add(key,subArr);
-				break;
+				return obj.add(key,subArr);
 			case STRING:
 				JsonString jstr = (JsonString)tree;
 				String str = jstr.toString();
-
+                // check if str to mangle and is not in blacklist
 				if(key.equals("name") && !check_blacklist(str)){
 					// check if mapped already
 					if (check_mangled(str)){
 						//System.out.println(str+" mapped to "+ht.get(str));
 						// use mapped name
 						System.out.println(key+" : "+ht.get(str));
-						obj.add(key,ht.get(str));
-                        if(arr != null)
-                            arr.add(obj);
-						break;
+						return obj.add(key,ht.get(str));
+                    
+                    // else it is not mapped
 					} else {
 						// map to new name
 						String temp = getObfuscatedName();
@@ -76,87 +148,24 @@ public class obfuscator{
 						ht.put(str,temp);
 						// convert String to JsonString
 						System.out.println(key+" : "+temp);
-						obj.add(key,temp);
-                        if(arr != null)
-                            arr.add(obj);
-						break;
+						return obj.add(key,temp);
+						
 					}
 				}
 				System.out.println(key+" : "+str);
-				obj.add(key,jstr);
-                if(arr != null)
-                    arr.add(obj);
-				break;
+				return obj.add(key,jstr);
 			case NUMBER:
 				JsonNumber num = (JsonNumber)tree;
 				System.out.println(key+" : "+num.toString());
-				obj.add(key,num);
-                if(arr != null)
-                    arr.add(obj);
-				break;
+				return obj.add(key,num);
 			case TRUE:
 			case FALSE:
 			case NULL:
 				System.out.println(key+" : "+tree.getValueType().toString());
-				obj.add(key,tree);
-                if(arr != null)
-                    arr.add(obj);
-				break;
+				return obj.add(key,tree);
 		}
+        return obj;
 	}
-
-	// // obfuscation name mangler
-	// private JsonObjectBuilder obf0(JsonValue tree, String key, JsonObjectBuilder obj, JsonBuilderFactory fac){
-	// 	JsonObjectBuilder subObj;
-	// 	JsonArrayBuilder subArr;
-	// 	switch (tree.getValueType()){
-	// 		case OBJECT:
-	// 			JsonObject object = (JsonObject)tree;
-	// 			subObj = fac.createObjectBuilder();
-	// 			for (String name:object.keySet())
-	// 				obj.add(name, obf0(object.get(name), name, subObj, fac));
-	// 			return obj;
-	// 		case ARRAY:
-	// 			JsonArray array = (JsonArray)tree;
-	// 			subArr = fac.createArrayBuilder();
-	// 			subObj = fac.createObjectBuilder();
-	// 			for (JsonValue val:array)
-	// 				subObj.add(val.toString(), obf0(val, null, obj, fac).build());
-	// 			subArr.add(subObj);
-	// 			return obj.add(key, subArr.build());
-	// 		case STRING:
-	// 			JsonString jstr = (JsonString)tree;
-	// 			String str = jstr.toString();
-	// 			if(key != null && key.equals("name")){
-	// 				// check if name is in blacklist
-	// 				if(!check_blacklist(str)){
-	// 					// check if mapped already
-	// 					if (check_mangled(str)){
-	// 						//System.out.println(str+" mapped to "+ht.get(str));
-	// 						// use mapped name
-	// 						return obj.add(key, ht.get(str));
-	// 					} else {
-	// 						// map to new name
-	// 						String temp = getObfuscatedName();
-	// 						// System.out.println("key: "+key+"\t"+str+" map to "+temp);
-	// 						ht.put(str,temp);
-	// 						// convert String to JsonString
-	// 						return obj.add(key, temp);
-	// 					}
-	// 				}
-	// 			}
-	// 			return obj.add(key, jstr);
-	// 		case NUMBER:
-	// 			return obj.add(key, (JsonNumber)tree);
-	// 		case TRUE:
-	// 			return obj.add(key, tree);
-	// 		case FALSE:
-	// 			return obj.add(key, tree);
-	// 		case NULL:
-	// 			return obj.addNull(key);
-	// 	}
-	// 	return obj;
-	// }
 
 	// check blacklist
 	// true if name is in blacklist
@@ -178,6 +187,7 @@ public class obfuscator{
 		}
 	}
 
+    // ----- ADD STRING OBFUSCATION CODE TO THIS METHOD -----
 	// generate a random string
 	private String getObfuscatedName(){
 		Random rand = new Random();
@@ -282,10 +292,12 @@ public class obfuscator{
 		obfuscated_ast = obfuscated_ast_builder.build();
 	}
 
+    // print the source ast to stdout
 	public void print_ast(){
 		print(ast,null,"");
 	}
 
+    // print the obfuscated ast to stdout
 	public void print_obf(){
 		print(obfuscated_ast,null,"");
 	}
@@ -294,8 +306,8 @@ public class obfuscator{
 		// open test and write to ob_test
 		obfuscator test = new obfuscator();
 		test.read("test.asc");	// test is a ast to obfuscate
-		test.print_ast();
-		System.out.println("\n\n-------------------------\n");
+		//test.print_ast();
+		//System.out.println("\n\n-------------------------\n");
 		test.name_mangler();
 		//test.print_obf();
 		test.write("ob_test.asc");

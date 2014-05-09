@@ -19,7 +19,6 @@ import java.util.Map;
 public class CLI {
 
 	//Forward controls xxx.jar [level][Lua file path input][Data dictionary path output][output after obfuscation][blacklist][custom name list] 
-	//example xxx.jar 5 "C:\Users\tommy\Desktop\tmp;C:\Users\tommy\Desktop\tmp 2" C:\Users\tommy\Desktop\AST C:\Users\tommy\Desktop\Output -blacklist="C:\Users\tommy\Desktop\tmp 2\blacklisted.txt" -customlist=C:\Users\tommy\Desktop\custom.txt
 	
 	private static int OBFUSCATION_LEVELS = 3; //number of obfuscation levels
 	private static String BLACKLIST_SWITCH = "-blacklist";
@@ -102,7 +101,7 @@ public class CLI {
 		return null;		
 	}
 	public static void main(String[] args) {
-		
+
 		if(args.length > 0){
 			
 			if(4 <= args.length && args.length <= 6){
@@ -130,26 +129,21 @@ public class CLI {
 						customNameList = (path != null)? FS.getFile(path) : null;
 						customNameMap = populateCustomlist(customNameList);
 					}
-					
-					demo(levels, luaSource, astOutputDir, outputSource, blacklist, customNameList);
 
-					if(System.getProperty("os.name").contains("Windows")){
-						String tmppath = "C:\\node_modules\\luaparse\\bin\\";
-						ProcessBuilder p;
-						for(File f : luaSource){
-							p = new ProcessBuilder("C:\\Program Files\\nodejs\\node_modules\\.bin\\luaparse.cmd","-f",f.getAbsolutePath());
-							p.redirectOutput(new File(astOutputDir + File.separator + FS.getFileNameWithoutExtension(f) + ".txt"));
-							p.start();
-						}
-						
+					String node = "node";
+
+					if(System.getProperty("os.name").contains("Linux")){
+						node = "nodejs";
 					}
-					else { //linux / mac
-						ProcessBuilder p = new ProcessBuilder("luaparse","-f",luaSource.getFirst().getAbsolutePath());
-						p.redirectOutput(new File(astOutputDir + "\\log.txt"));
+					//String minPath = "luamin" + File.separator + "bin" + File.separator;
+					String path = "luamin" + File.separator + "node_modules" + File.separator + "luaparse" + File.separator + "bin" + File.separator;// + windowsOnlyFileExtension;
+					ProcessBuilder p;
+					for(File f : luaSource){
+						p = new ProcessBuilder(node, path+"luaparse", "-f", f.getAbsolutePath());
+						p.redirectOutput(new File(astOutputDir + File.separator + FS.getFileNameWithoutExtension(f) + ".ast"));
 						p.start();
 					}
-				
-			
+					demo(levels, luaSource, astOutputDir, outputSource, blacklist, customNameList);
 				}
 				
 				catch(NumberFormatException e){
@@ -253,6 +247,7 @@ public class CLI {
 		System.out.println("\n\n");
 		System.out.println("Output Lua Source");
 		System.out.println("\t" + outputSource.getAbsolutePath().toString());
+
 		
 		if(blacklist != null){			
 			System.out.println("\n\n");
