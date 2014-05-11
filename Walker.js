@@ -1,5 +1,9 @@
+// to run you must install "node js" 
+// then from the terminal run :node Walker.js
+ 
 var fs = require('fs');
-var file = __dirname + '/tst.txt';
+//enter in an ast file in this string below
+var file = __dirname + 'Enter ast to walk here'; // ex ast.txt or ast.json 
 var content;
  
 fs.readFile(file, 'utf8', function (err, data) {
