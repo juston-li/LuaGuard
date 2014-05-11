@@ -1,4 +1,4 @@
-// to run you must install "node js" 
+// to run you must install "node js" http://nodejs.org
 // then from the terminal run :node Walker.js
  
 var fs = require('fs');
