@@ -1,7 +1,5 @@
 hello.lua
 ../Lua/Account.Lua
-../Lua/AllWord.Lua
 ../Lua/Plot.Lua
 ../Lua/SavingTablesWithCycles.Lua
 ../Lua/SetLibrary.Lua
-
