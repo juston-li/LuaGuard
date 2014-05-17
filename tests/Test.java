@@ -23,7 +23,6 @@ public class Test{
 
 	public void getTests(){
 		try {
-			
 			BufferedReader br = new BufferedReader(new FileReader("test_programs"));
 			String line;
 				while ((line = br.readLine()) != null) {
@@ -77,21 +76,26 @@ public class Test{
 			pb.redirectOutput(diff);
 			Process p = pb.start();
 			p.waitFor();
-
-			if(diff.length() == 0) {
-				System.out.println("Output matches\n");
-			} else { 
-				File obf = new File("obfuscated.lua");
-				File obf_dump = new File("obfuscated"+testNum+".lua");
-				File diff_dump = new File("diff"+testNum+".txt");
-				obf.renameTo(obf_dump); //TODO: Use actual file name, remove file path
-				diff.renameTo(diff_dump);
-
+			
+			//If file is not empty, something is different with outputs, test failed
+			if(diff.length() != 0) { 
 				testPass=false;
 
+				//Get filename with and without .lua
+				String fileName = new File(originalProgram).getName();
+				int dot = fileName.lastIndexOf(".");
+    				String progName  = fileName.substring(0, dot);
+
+				//Dump diff and obfuscated lua program in files rather than fill terminal
+				File obf = new File("obfuscated.lua");
+				File diffDump = new File("diff_"+progName+".txt");
+				File obfDump = new File("obfuscated_"+fileName);
+				obf.renameTo(obfDump);
+				diff.renameTo(diffDump);
+ 
 				System.out.println("Output does not match");
-				System.out.println("Diff located in diff_'testnumber'.txt");
-				System.out.println("lua program located in obf_'program'.lua\n");
+				System.out.println("Diff located in "+diffDump.getName());
+				System.out.println("lua program located in "+obfDump.getName()+"\n");
 			}
 
 		} catch (IOException e) {
@@ -144,11 +148,24 @@ public class Test{
 
 		//TODO: Add option to fail on unaccceptable file size difference
 	}
+	
+	public void cleanUp(){
+		//TODO:Using files as an intermediary is really inefficient; slow read/write to disk
+		//Change to ByteArrayOutputStream
+		File output = new File("output.txt");
+		File obfLua = new File("obfuscated.lua");
+		File obfOutput = new File("obfuscated_output.txt");
+
+		output.delete();
+		obfLua.delete();
+		obfOutput.delete();
+	}
 
 	public static void main(String []args){
 		Test test = new Test();
 
 		test.getTests();
 		test.runTests();
+		test.cleanUp();
 	}
 }
