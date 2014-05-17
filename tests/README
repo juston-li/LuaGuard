@@ -1,8 +1,10 @@
+Tests to be run in Unix enviroment
+
 'make' to compile tests
 
-'java -cp .:jansi-1.11.jar Test' to run test
+'java Test' to run test
 
-'make testclean' to remove test output files
+'make cleantest' to remove test output files
 'make clean' to remove test output files and binaries
 
 'test_programs' is a text file with a list of programs to test

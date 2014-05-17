@@ -72,7 +72,6 @@ public class Test{
 			pb.redirectOutput(new File("obfuscated_output.txt"));
 			pb.start();
 
-			//TODO: Windows doesn't have diff so need a library packaged
 			File diff = new File("diff.txt");
 			pb = new ProcessBuilder("diff", "output.txt", "obfuscated_output.txt");
 			pb.redirectOutput(diff);

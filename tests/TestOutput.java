@@ -1,28 +1,27 @@
-import     org.fusesource.jansi.AnsiConsole;
-import static org.fusesource.jansi.Ansi.*;
-import static org.fusesource.jansi.Ansi.Color.*;
-
 public class TestOutput {
+	public static final String GREEN = "\u001B[32m";
+	public static final String RED = "\u001B[31m";
+	public static final String DEFAULT = "\u001B[0m";
 
 	public TestOutput(){
 	}
 	
 	public void printStart(int testNum){
-		AnsiConsole.out.println(ansi().fg(GREEN).a("*****************************").reset());
-		AnsiConsole.out.println(ansi().fg(GREEN).a("**     Starting Test " + testNum + "     **").reset());
-		AnsiConsole.out.println(ansi().fg(GREEN).a("*****************************").reset());
+		System.out.println(GREEN+"*****************************");
+		System.out.println("**     Starting Test " + testNum + "     **");
+		System.out.println("*****************************"+DEFAULT);
 	}	
 	
 	public void printPass(int testNum){
-		AnsiConsole.out.println(ansi().fg(GREEN).a("*****************************").reset());
-		AnsiConsole.out.println(ansi().fg(GREEN).a("**      Test " + testNum + " PASSED      **").reset());
-		AnsiConsole.out.println(ansi().fg(GREEN).a("*****************************\n").reset());
+		System.out.println(GREEN+"*****************************");
+		System.out.println("**      Test " + testNum + " PASSED      **");
+		System.out.println("*****************************\n"+DEFAULT);
 	}
 	
 	public void printFail(int testNum){
-		AnsiConsole.out.println(ansi().fg(RED).a("*****************************").reset());
-		AnsiConsole.out.println(ansi().fg(RED).a("**      Test " + testNum + " FAILED      **").reset());
-		AnsiConsole.out.println(ansi().fg(RED).a("*****************************\n").reset());
+		System.out.println(RED+"*****************************");
+		System.out.println("**      Test " + testNum + " FAILED      **");
+		System.out.println("*****************************\n"+DEFAULT);
 	}
 	
 	public void printResults(int passedTests, int totalTests, String failedTests){
