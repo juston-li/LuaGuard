@@ -8,25 +8,26 @@ import java.lang.Process;
 
 public class Test{
 	int testNum,passedTests;
-	String failedTests;
-	List<String> list;
+	List<String> testPrograms;
+	List<String> failedTests;
 	TestOutput testOutput;
 	boolean testPass;
 
 	public Test(){
 		testNum=1;
 		passedTests=0;
-		failedTests="";
+		failedTests = new ArrayList<String>();;
+		testPrograms = new ArrayList<String>();
 		testOutput = new TestOutput();
 	}
 
 	public void getTests(){
 		try {
-			list = new ArrayList<String>();
+			
 			BufferedReader br = new BufferedReader(new FileReader("test_programs"));
 			String line;
 				while ((line = br.readLine()) != null) {
-   					list.add(line);
+   					testPrograms.add(line);
 				}
 			br.close();
 		} catch (IOException e) {
@@ -35,24 +36,23 @@ public class Test{
 	}
 
 	public void runTests(){
-		for(String s : list) {
+		for(String prog : testPrograms) {
 			testPass = true; 
-			testOutput.printStart(testNum);
-			System.out.println(s+"\n");
+			testOutput.printStart(prog);
 			//TODO:Call obfuscator, output moved to current directory as obfuscated.lua
 
 			/* File redirect seems to increase the measured execution times
 			   Isolate tests by running seperate comparisons for outputs 
 			   and execution time */
-			compareOutput(s);
-			compareExecutionTime(s);
-			compareFileSize(s);
+			compareOutput(prog);
+			compareExecutionTime(prog);
+			compareFileSize(prog);
 			if(testPass) {
-				testOutput.printPass(testNum);
+				testOutput.printPass();
 				passedTests++;
 			} else {
-				testOutput.printFail(testNum);
-				failedTests = failedTests+testNum+" ";
+				testOutput.printFail();
+				failedTests.add(prog);
 			}
 
 			testNum++;
