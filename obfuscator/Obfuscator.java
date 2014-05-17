@@ -7,7 +7,7 @@ interface Obfuscator {
 	This interface specifies the requirements obfuscate an AST file
 	*/
 	
-	File obfuscate(File ast, ArrayList<String> blacklist);
+	void obfuscate(File ast, ArrayList<String> blacklist);
 	/*
 	
 	ast: The ast file to be obfuscated using either walker.js or GSON
