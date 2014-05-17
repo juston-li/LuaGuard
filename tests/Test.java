@@ -11,11 +11,15 @@ public class Test{
 	List<String> testPrograms;
 	List<String> failedTests;
 	TestOutput testOutput;
+	double execTimeThreshold;
+	double filesizeThreshold;
 	boolean testPass;
 
-	public Test(){
+	public Test(double execTime, double filesize){
 		testNum=1;
 		passedTests=0;
+		execTimeThreshold = execTime;
+		filesizeThreshold = filesize;
 		failedTests = new ArrayList<String>();;
 		testPrograms = new ArrayList<String>();
 		testOutput = new TestOutput();
@@ -44,8 +48,14 @@ public class Test{
 			   Isolate tests by running seperate comparisons for outputs 
 			   and execution time */
 			compareOutput(prog);
-			compareExecutionTime(prog);
-			compareFileSize(prog);
+			//no need to run if no time or filesize thresholds given
+			if(execTimeThreshold != 0){ 
+				compareExecutionTime(prog);
+			}
+			if(filesizeThreshold != 0) {
+				compareFileSize(prog);
+			}
+
 			if(testPass) {
 				testOutput.printPass();
 				passedTests++;
@@ -93,9 +103,9 @@ public class Test{
 				obf.renameTo(obfDump);
 				diff.renameTo(diffDump);
  
-				System.out.println("Output does not match");
+				System.out.println("[Output does not match]");
 				System.out.println("Diff located in "+diffDump.getName());
-				System.out.println("lua program located in "+obfDump.getName()+"\n");
+				System.out.println("lua program located in "+obfDump.getName());
 			}
 
 		} catch (IOException e) {
@@ -106,6 +116,8 @@ public class Test{
 	}
 
 	public void compareExecutionTime(String originalProgram){
+		long origElapsedTime = 1;
+		long obfElapsedTime = 1;
 		try {
 			ProcessBuilder pb = new ProcessBuilder("lua", originalProgram);
 			/*First run seems to take more time even for the same program
@@ -118,8 +130,7 @@ public class Test{
 			Process p = pb.start();	
 			int i = p.waitFor();
 			long origStopTime = System.currentTimeMillis();
-			long origElapsedTime = origStopTime - origStartTime;
-			System.out.println("Original Execution Time: "+origElapsedTime+" ms");
+			origElapsedTime = origStopTime - origStartTime;
 
 			pb = new ProcessBuilder("lua", "obfuscated.lua");
 			
@@ -128,25 +139,42 @@ public class Test{
 			p = pb.start();	
 			i = p.waitFor();
 			long obfStopTime = System.currentTimeMillis();
-			long obfElapsedTime = obfStopTime - obfStartTime;
-			System.out.println("Obfuscated Execution Time: "+obfElapsedTime+" ms\n");
-	
+			obfElapsedTime = obfStopTime - obfStartTime;
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		//TODO: Programs can take as little as several milliseconds with timer fluctuating
+		//      Making a 1ms to 2ms difference a 200% increase. Use nanoseconds for precision? 
+		double ratio = obfElapsedTime / origElapsedTime;
+		
+		if(ratio > execTimeThreshold) {
+			testPass=false;
 
-		//TODO: Add option to fail on unaccceptable execution time difference
+			System.out.println("[Execution time difference exceeds threshold]");
+			System.out.println("Obfuscated Execution Time: "+obfElapsedTime+" ms");
+			System.out.println("Original Execution Time: "+origElapsedTime+" ms");
+		}
 	}
 
 	public void compareFileSize(String originalProgram){
 		File origFile = new File(originalProgram);
 		File obfFile = new File("obfuscated.lua");
-		System.out.println("Original File Size: "+origFile.length()+" Bytes");
-		System.out.println("Obfuscated File Size: "+obfFile.length()+" Bytes");
+		
+		double origLength = origFile.length();
+		double obfLength = obfFile.length();
 
-		//TODO: Add option to fail on unaccceptable file size difference
+		double ratio = obfLength / origLength;
+		
+		if(ratio > filesizeThreshold) {
+			testPass=false;
+
+			System.out.println("[Filesize difference exceeds threshold]");
+			System.out.println("Original File Size: "+origLength+" Bytes");
+			System.out.println("Obfuscated File Size: "+obfLength+" Bytes");
+		}
 	}
 	
 	public void cleanUp(){
@@ -162,7 +190,23 @@ public class Test{
 	}
 
 	public static void main(String []args){
-		Test test = new Test();
+		double execTime = 0;
+		double filesize = 0;
+		if(args.length == 2 || args.length == 4){
+			if(args[0].equals("-time")) {
+				execTime = Double.parseDouble(args[1]);
+			} else if (args[0].equals("-filesize")) {
+				filesize = Double.parseDouble(args[1]);
+			}
+		}
+		if (args.length == 4) {
+			if(args[2].equals("-time")) {
+				execTime = Double.parseDouble(args[3]);
+			} else if (args[2].equals("-filesize")) {
+				filesize = Double.parseDouble(args[3]);
+			}
+		}
+		Test test = new Test(execTime,filesize);
 
 		test.getTests();
 		test.runTests();
