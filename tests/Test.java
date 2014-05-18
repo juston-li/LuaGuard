@@ -74,17 +74,20 @@ public class Test{
 			/*Original*/
 			ProcessBuilder pb = new ProcessBuilder("lua", originalProgram);	
 			pb.redirectOutput(new File("output.txt"));
+			Process p = pb.start();	
+			p.waitFor();
 			pb.start();	
 
 			/*Obfuscated*/
 			pb = new ProcessBuilder("lua", "obfuscated.lua");
 			pb.redirectOutput(new File("obfuscated_output.txt"));
-			pb.start();
+			p = pb.start();	
+			p.waitFor();
 
 			File diff = new File("diff.txt");
 			pb = new ProcessBuilder("diff", "output.txt", "obfuscated_output.txt");
 			pb.redirectOutput(diff);
-			Process p = pb.start();
+			p = pb.start();
 			p.waitFor();
 			
 			//If file is not empty, something is different with outputs, test failed
