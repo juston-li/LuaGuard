@@ -224,6 +224,15 @@ public class walker{
 		blacklist.add(str);
 	}
 
+	public void obfuscate(File ast, ArrayList<String> bl){
+		walker TexasRanger = new walker();
+		TexasRanger.addToBlacklist(bl);
+		JsonReader jreader = TexasRanger.read_ast(ast.getFileName());
+		StringWriter swriter = new StringWriter();
+		JsonWriter jwriter = new JsonWriter(swriter);
+		TexasRanger.obf0(jreader, jwriter);
+		TexasRanger.write_ast(swriter, ast.getFileName());
+	}
 	public static void main(String[] args){
 		// create new walker
 		walker TexasRanger = new walker();
