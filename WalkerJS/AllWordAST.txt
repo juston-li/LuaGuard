@@ -1,0 +1,350 @@
+{
+  "type": "Chunk",
+  "body": [
+    {
+      "type": "FunctionDeclaration",
+      "identifier": {
+        "type": "Identifier",
+        "name": "allwords"
+      },
+      "isLocal": false,
+      "parameters": [],
+      "body": [
+        {
+          "type": "LocalStatement",
+          "variables": [
+            {
+              "type": "Identifier",
+              "name": "line"
+            }
+          ],
+          "init": [
+            {
+              "type": "CallExpression",
+              "base": {
+                "type": "MemberExpression",
+                "indexer": ".",
+                "identifier": {
+                  "type": "Identifier",
+                  "name": "read"
+                },
+                "base": {
+                  "type": "Identifier",
+                  "name": "io"
+                }
+              },
+              "arguments": []
+            }
+          ]
+        },
+        {
+          "type": "LocalStatement",
+          "variables": [
+            {
+              "type": "Identifier",
+              "name": "pos"
+            }
+          ],
+          "init": [
+            {
+              "type": "NumericLiteral",
+              "value": 1,
+              "raw": "1"
+            }
+          ]
+        },
+        {
+          "type": "ReturnStatement",
+          "arguments": [
+            {
+              "type": "FunctionDeclaration",
+              "identifier": null,
+              "isLocal": false,
+              "parameters": [],
+              "body": [
+                {
+                  "type": "WhileStatement",
+                  "condition": {
+                    "type": "Identifier",
+                    "name": "line"
+                  },
+                  "body": [
+                    {
+                      "type": "LocalStatement",
+                      "variables": [
+                        {
+                          "type": "Identifier",
+                          "name": "s"
+                        },
+                        {
+                          "type": "Identifier",
+                          "name": "e"
+                        }
+                      ],
+                      "init": [
+                        {
+                          "type": "CallExpression",
+                          "base": {
+                            "type": "MemberExpression",
+                            "indexer": ".",
+                            "identifier": {
+                              "type": "Identifier",
+                              "name": "find"
+                            },
+                            "base": {
+                              "type": "Identifier",
+                              "name": "string"
+                            }
+                          },
+                          "arguments": [
+                            {
+                              "type": "Identifier",
+                              "name": "line"
+                            },
+                            {
+                              "type": "StringLiteral",
+                              "value": "%w+",
+                              "raw": "\"%w+\""
+                            },
+                            {
+                              "type": "Identifier",
+                              "name": "pos"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "IfStatement",
+                      "clauses": [
+                        {
+                          "type": "IfClause",
+                          "condition": {
+                            "type": "Identifier",
+                            "name": "s"
+                          },
+                          "body": [
+                            {
+                              "type": "AssignmentStatement",
+                              "variables": [
+                                {
+                                  "type": "Identifier",
+                                  "name": "pos"
+                                }
+                              ],
+                              "init": [
+                                {
+                                  "type": "BinaryExpression",
+                                  "operator": "+",
+                                  "left": {
+                                    "type": "Identifier",
+                                    "name": "e"
+                                  },
+                                  "right": {
+                                    "type": "NumericLiteral",
+                                    "value": 1,
+                                    "raw": "1"
+                                  }
+                                }
+                              ]
+                            },
+                            {
+                              "type": "ReturnStatement",
+                              "arguments": [
+                                {
+                                  "type": "CallExpression",
+                                  "base": {
+                                    "type": "MemberExpression",
+                                    "indexer": ".",
+                                    "identifier": {
+                                      "type": "Identifier",
+                                      "name": "sub"
+                                    },
+                                    "base": {
+                                      "type": "Identifier",
+                                      "name": "string"
+                                    }
+                                  },
+                                  "arguments": [
+                                    {
+                                      "type": "Identifier",
+                                      "name": "line"
+                                    },
+                                    {
+                                      "type": "Identifier",
+                                      "name": "s"
+                                    },
+                                    {
+                                      "type": "Identifier",
+                                      "name": "e"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "ElseClause",
+                          "body": [
+                            {
+                              "type": "AssignmentStatement",
+                              "variables": [
+                                {
+                                  "type": "Identifier",
+                                  "name": "line"
+                                }
+                              ],
+                              "init": [
+                                {
+                                  "type": "CallExpression",
+                                  "base": {
+                                    "type": "MemberExpression",
+                                    "indexer": ".",
+                                    "identifier": {
+                                      "type": "Identifier",
+                                      "name": "read"
+                                    },
+                                    "base": {
+                                      "type": "Identifier",
+                                      "name": "io"
+                                    }
+                                  },
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            {
+                              "type": "AssignmentStatement",
+                              "variables": [
+                                {
+                                  "type": "Identifier",
+                                  "name": "pos"
+                                }
+                              ],
+                              "init": [
+                                {
+                                  "type": "NumericLiteral",
+                                  "value": 1,
+                                  "raw": "1"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "ReturnStatement",
+                  "arguments": [
+                    {
+                      "type": "NilLiteral",
+                      "value": null,
+                      "raw": "nil"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "ForGenericStatement",
+      "variables": [
+        {
+          "type": "Identifier",
+          "name": "word"
+        }
+      ],
+      "iterators": [
+        {
+          "type": "CallExpression",
+          "base": {
+            "type": "Identifier",
+            "name": "allwords"
+          },
+          "arguments": []
+        }
+      ],
+      "body": [
+        {
+          "type": "CallStatement",
+          "expression": {
+            "type": "CallExpression",
+            "base": {
+              "type": "Identifier",
+              "name": "print"
+            },
+            "arguments": [
+              {
+                "type": "Identifier",
+                "name": "word"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "comments": [
+    {
+      "type": "Comment",
+      "value": " current line",
+      "raw": "-- current line"
+    },
+    {
+      "type": "Comment",
+      "value": " current position in the line",
+      "raw": "-- current position in the line"
+    },
+    {
+      "type": "Comment",
+      "value": " iterator function",
+      "raw": "-- iterator function"
+    },
+    {
+      "type": "Comment",
+      "value": " repeat while there are lines",
+      "raw": "-- repeat while there are lines"
+    },
+    {
+      "type": "Comment",
+      "value": " found a word?",
+      "raw": "-- found a word?"
+    },
+    {
+      "type": "Comment",
+      "value": " next position is after this word",
+      "raw": "-- next position is after this word"
+    },
+    {
+      "type": "Comment",
+      "value": " return the word",
+      "raw": "-- return the word"
+    },
+    {
+      "type": "Comment",
+      "value": " word not found; try next line",
+      "raw": "-- word not found; try next line"
+    },
+    {
+      "type": "Comment",
+      "value": " restart from first position",
+      "raw": "-- restart from first position"
+    },
+    {
+      "type": "Comment",
+      "value": " no more lines: end of traversal",
+      "raw": "-- no more lines: end of traversal"
+    },
+    {
+      "type": "Comment",
+      "value": " use example",
+      "raw": "-- use example"
+    }
+  ]
+}
