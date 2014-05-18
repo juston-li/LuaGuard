@@ -13,8 +13,9 @@ import java.util.AbstractMap.SimpleEntry;
 
 
 public class CLI {
+	//*******************************************************************************************************************************************************************************************
 
-	// lg.jar -jar LEVEL INPUT_PATH OUTPUT_PATH [-blacklist=BLACKLIST_PATH] [-debug]
+	// lg.jar -jar LEVEL INPUT_PATH AST_PATH OUTPUT_PATH [-blacklist=BLACKLIST_PATH] [-debug]
 	
 	private final static String BLACKLIST_PARAM = "-blacklist";
 
@@ -22,10 +23,10 @@ public class CLI {
 	
 	private final static String TRUE = "TRUE";
 	
-	private final static int MIN_ARGS = 3;
-	private final static int MAX_ARGS = 5;
+	private final static int MIN_ARGS = 4;
+	private final static int MAX_ARGS = 6;
 
-
+	//*******************************************************************************************************************************************************************************************
 	public static void main(String[] args) {
 
 		if(args.length > 0){
@@ -37,8 +38,11 @@ public class CLI {
 				try {
 					//minimum required params. Error if cannot parse.
 					int levels = Integer.parseInt(args[0],10);
-					File output = UTIL.getDir(args[2]);
-					SimpleEntry<ArrayList<File>, ArrayList<String>> input = UTIL.seperatedFilesToList(args[1], output);
+					File output = UTIL.getDir(args[3]);
+					File ast = UTIL.getDir(args[2]);
+					SimpleEntry<ArrayList<File>, ArrayList<String>> ioMap = UTIL.seperatedFilesToList(args[1], output);
+					SimpleEntry<ArrayList<File>, ArrayList<String>> astMap = UTIL.seperatedFilesToList(args[1], ast, true); //true switch for astDir
+					
 					File blacklistFile = null;
 					boolean debug = false;
 					
@@ -53,13 +57,14 @@ public class CLI {
 						String d = processOptionalArgs(optionalArgs, DEBUG_SWITCH);
 						if(d != null && d.equals(TRUE))
 							debug = true;
+						System.out.println("Debug is " + debug);
 					}
 					
 					//get global and optional user defined blacklist and run the driver
 					ArrayList<String> blacklist = UTIL.getBlacklist(blacklistFile);
 					//if(debug)
-						debug(levels, input, output, blacklist);
-					//UTIL.driver(levels, input, output, blacklist);
+						debug(levels, ioMap, output, blacklist);
+					UTIL.driver(levels, ioMap, astMap, blacklist);
 					
 
 				}
@@ -89,6 +94,7 @@ public class CLI {
 		}
 
 	}
+	//*******************************************************************************************************************************************************************************************
 	private static String processOptionalArgs(String[] str, String option) {
 		for(String s : str){
 			//parameters
@@ -104,6 +110,7 @@ public class CLI {
 		}
 		return null;		
 	}
+	//*******************************************************************************************************************************************************************************************
 	private static void man(){
 		// psudo "man" page
 
@@ -139,13 +146,11 @@ public class CLI {
 		System.out.println("AUTHORS");
 		System.out.println(TAB + "Indian Runners - The combined efforts of students from PKU and the University of Oregon" + NL);
 		
-		System.out.println("REPORTING BUGS");
-		System.out.println(TAB + "Reporting Bug contact info here" + NL);
-		
 		System.out.println("SEE ALSO");
 		System.out.println(TAB + "node.js - http://nodejs.org/");
 		System.out.println(TAB + "LuaParse - http://oxyc.github.io/luaparse/");
 	}
+	//*******************************************************************************************************************************************************************************************
 	public static void debug(int level, SimpleEntry<ArrayList<File>, ArrayList<String>> luaSource, File outputSource, ArrayList<String> blacklist){
 		System.out.println("Debug");
 		String s;
@@ -177,13 +182,13 @@ public class CLI {
 		System.out.println("\n\n");
 		System.out.println("Output Lua Source");
 		System.out.println("\t" + outputSource.getAbsolutePath().toString());
-		
-		if(blacklist != null){			
-			System.out.println("\n\n");
-			for(String str : blacklist)
-				System.out.println("\t\t" + str);
-		}
+				
+		System.out.println("\n\n");
+		System.out.println("BlackList");
+		for(String str : blacklist)
+			System.out.println("\t" + str);
+
 		
 	}
-
+	//*******************************************************************************************************************************************************************************************
 }

@@ -12,10 +12,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 import javax.rmi.CORBA.Util;
+import javax.sql.rowset.serial.SerialArray;
 
 
 public final class UTIL {
-	
+	//*******************************************************************************************************************************************************************************************
 	//####
 	//###
 	//##
@@ -26,71 +27,102 @@ public final class UTIL {
 	//##
 	//###
 	//####
-	
+	//*******************************************************************************************************************************************************************************************
 	private final static String OUTPUT_SUFFIX = "_obfuscated";
-/*
-	public static void driver(int obfuscationLevels, SimpleEntry<ArrayList<File>, ArrayList<String>> inputList, File outputDir, ArrayList<String> blacklist){
-		boolean[] levels = obfuscationLevels(obfuscationLevels);
-		String luaPath;
-		File f;
-		for(int i = 0; i < inputList.size(); ++i){
-			
-			luaPath = inputList.get(i).getAbsolutePath();
-			f = parse(inputList.get(i));
 
-			if(f != null){
+	//*******************************************************************************************************************************************************************************************
+	//main driver for luaguard
+	public static void driver(int obfuscationLevels, SimpleEntry<ArrayList<File>, ArrayList<String>> ioMap, SimpleEntry<ArrayList<File>, ArrayList<String>> astMap, ArrayList<String> blacklist){
+		boolean[] levels = obfuscationLevels(obfuscationLevels);
+		ArrayList<File> ioInput = ioMap.getKey();
+		ArrayList<String> ioOutput = ioMap.getValue();
+		ArrayList<String> astOutput = astMap.getValue();
+		
+		File ast;
+		String luaOutputPath;
+		for(int i = 0; i < ioInput.size(); ++i){
+			ast = parse(ioInput.get(i), astOutput.get(i));
+			luaOutputPath = ioOutput.get(i);
+
+			if(ast != null){
 				for(int j = 0; j < obfuscators.size(); ++j){
 					if(levels[j])
-						obfuscators.get(j).obfuscate(f, blacklist);
+						obfuscators.get(j).obfuscate(ast, blacklist);
 				}
-				unparse(f, luaPath);
+				unparse(ast, luaOutputPath);
 			}
 		}
 	}
-*/
-	public static void runProcess(File outputRedirect, String... commandWithParameters){ //String... is var args, use as many string params or an array of strings
+	//*******************************************************************************************************************************************************************************************
+	public static void runProcess(File inputRedirect, File outputRedirect, String... commandWithParameters){ //String... is var args, use as many string params or an array of strings
 		try {
-			new ProcessBuilder(commandWithParameters).redirectOutput(outputRedirect).start().waitFor();
+			ProcessBuilder p = new ProcessBuilder(commandWithParameters).redirectInput(inputRedirect).redirectOutput(outputRedirect).redirectError(ProcessBuilder.Redirect.INHERIT);
+			System.out.println(p.command());		
+			p.start().waitFor();
 		} catch (InterruptedException e) {
 			System.err.println("Process was interupted. " + commandWithParameters);
 		} catch (IOException e) {
-			System.err.println("Was unable to write to file. " + outputRedirect.getAbsolutePath());
+			System.err.println("Was unable to read from file " + inputRedirect.getAbsolutePath() + " or possibly write to " + commandWithParameters[commandWithParameters.length-1]);
 		}
 	}
-	
-	private static File parse(File lua){
+
+	//node luamin/node_modules/luaparse/bin/luaparse.js --scope -f lua > ast
+	private static File parse(File lua, String astPath){
 		String node = "node";
+		String path = "luamin" + File.separator + "node_modules" + File.separator + "luaparse" + File.separator + "bin" + File.separator;
 
 		if(System.getProperty("os.name").contains("Linux")){
 			node = "nodejs";
 		}
 		
-		File f;
-		try {
-			f = File.createTempFile(UTIL.getFileNameWithoutExtension(lua) + OUTPUT_SUFFIX, new Date().toString());
-			f.deleteOnExit();
-			String path = "luamin" + File.separator + "node_modules" + File.separator + "luaparse" + File.separator + "bin" + File.separator;
-			
-			UTIL.runProcess(f, node, path+"luaparse", "-f", lua.getAbsolutePath());
-
-			return f;
-			
-		} catch (IOException e1) {
-			System.out.println("Was not able to create a temp ast file for " + lua.getAbsolutePath());
-		}
-		return null;
+		File ast = renamer(astPath);
 		
+		// node luamin/node_modules/luaparse/bin/luaparse.js --scope -f INPUTFILE > OUTPUTFILE
+		UTIL.runProcess(lua, ast, node, path+"luaparse.js", "--scope", "-f", lua.getAbsolutePath(), ">", ast.getAbsolutePath());
+
+		return ast;		
 	}
-	private static File unparse(File ast, String orginalFilePath){
-		/* fill in luamin use here
-		String path = "luamin" + File.separator + "node_modules" + File.separator + "luaparse" + File.separator + "bin" + File.separator;
-		ProcessBuilder p = new ProcessBuilder(node, path+"luaparse", "-f", lua.getAbsolutePath());
-		p.redirectOutput(new File(astDir + File.separator + FS.getFileNameWithoutExtension(lua) + OUTPUT_SUFFIX + ".ast"));
-		p.start();
-		*/
-		return ast;//TODO
+	//node luamin/bin/luamin.js -f ast > lua
+	private static void unparse(File ast, String outputPath){
+		String node = "node";
+		String path = "luamin" + File.separator + "bin" + File.separator;
+
+		if(System.getProperty("os.name").contains("Linux")){
+			node = "nodejs";
+		}
+		
+		File lua = renamer(outputPath);
+		try {
+			lua.createNewFile();
+		
+			//node luamin/bin/luamin.js -f INPUTFILE > OUTPUTFILE
+			UTIL.runProcess(ast, lua,  node, path+"luamin.js", "-f", ast.getAbsolutePath(), ">", lua.getAbsolutePath());
+
+		} catch (IOException e) {
+			System.out.println("Was unable to create file " + ast.getAbsolutePath());
+		} 
 	}
-	
+	//This is only intended for parse and unparse to call
+	private static File renamer(String suggestedPath){
+		File f = new File(suggestedPath);
+		
+		//create necessary directories
+		if(!f.getParentFile().exists())
+			f.getParentFile().mkdirs();
+		
+		//loop terminates once f doesn't have a name collision.
+		String name;
+		while(f.exists()){
+			int n = Integer.valueOf(f.getName().replaceAll("^.*?(_obfuscated)+|(\\..+)?$", "")) + 1; //anycharacters upto the last occurance of _obfuscated. on the right side remove optional dot followed by anything
+			name = getFileNameWithoutExtension(f);
+			name = name.replaceAll("\\d+(\\..+)?$","") + String.valueOf(n); //Looking at the end remove the optional dot followed by anything (.lua) and any digits preceeding
+
+			f = new File(f.getParentFile().getAbsolutePath() + File.separator + name + "." + getDottlessFileExtension(suggestedPath));
+		}
+		return f;
+	}
+	//*******************************************************************************************************************************************************************************************
+	//returns an array that grows with the obfuscator linked list
 	public static boolean[] obfuscationLevels(int n)  {
 		
 		boolean[] levels = new boolean[obfuscators.size()];
@@ -105,7 +137,7 @@ public final class UTIL {
 
 		return levels;
 	}
-	
+	//*******************************************************************************************************************************************************************************************
 	public static ArrayList<String> getBlacklist(File f) throws FileNotFoundException{
 		//Returns the blacklist. If the parameter is null then it returns the default blacklist else it returns the union of the default and the file provided.
 		String path = "." + File.separator + "LuaGuardCLI" + File.separator + "keyword_blacklist.txt";
@@ -135,8 +167,7 @@ public final class UTIL {
 		}
 		return list;
 	}
-	
-	
+	//*******************************************************************************************************************************************************************************************
 	public static File getDir(String path) throws SecurityException, FileNotFoundException {
 		File dir = new File(path);
 		if(dir.isDirectory())
@@ -160,68 +191,49 @@ public final class UTIL {
 			throw new FileNotFoundException(f.toString() + " is not a file");
 		}
 	}
-	public static String getFileNameWithoutExtension(File f){
-		String name = f.getName();
-		int pos = name.lastIndexOf(".");
+	//*******************************************************************************************************************************************************************************************
+	public static String getFileNameWithoutExtension(String s){
+		int pos = s.lastIndexOf(".");
 		if (pos > 0) {
-		    name = name.substring(0, pos);
+		    s = s.substring(0, pos);
 		}
-		return name;
+		return s;
+	}
+	public static String getFileNameWithoutExtension(File f){
+		return getFileNameWithoutExtension(f.getName());
+	}
+	public static String getDottlessFileExtension(String f){
+		String extension = "";
+
+		int i = f.lastIndexOf('.');
+		if (i >= 0) {
+		    extension = f.substring(i+1);
+		}
+		return extension;
+	}
+	//*******************************************************************************************************************************************************************************************
+	public static SimpleEntry<ArrayList<File>, ArrayList<String>> seperatedFilesToList(String seperatedList, File targetDirectory) throws FileNotFoundException, SecurityException {
+		return seperatedFilesToList(seperatedList, targetDirectory, false);
 	}
 	
-	/* Orginal
-	 
-	public static ArrayList<File> seperatedFilesToList(String s) throws FileNotFoundException, SecurityException {
-		String[] paths = s.split(File.pathSeparator);
-		ArrayList<File> fileList = new ArrayList<File>();
-		
-		for(String path : paths){
-			File file = new File(path);
-			if(file.isFile())
-				fileList.add(file);
-			
-			else if(file.isDirectory()){
-				String parent = path;
-				try{
-					String[] children = file.list();
-					parent += File.separator;
-					
-					for(String child : children)
-						fileList.addAll(seperatedFilesToList(parent + child));	
-				}
-				catch (SecurityException e){
-					throw new SecurityException("Cannot list child files of" + file.toString());
-				}
-			}
-			else 
-				throw new FileNotFoundException(path + " does not exist");
-		}
-		
-		return fileList;
-	}
-	 
-	 
-	 */
-	
-	
-	
-	public static SimpleEntry<ArrayList<File>, ArrayList<String>> seperatedFilesToList(String s, File outputSubDirectory) throws FileNotFoundException, SecurityException {
-		//hashmap<inputFiles, outputFilePathPromise> There may be a name collision with outputFiles and conflicts will be delt with by the unparser.		
-		
-		String[] paths = s.split(File.pathSeparator);
+	public static SimpleEntry<ArrayList<File>, ArrayList<String>> seperatedFilesToList(String seperatedList, File targetDirectory, boolean astDir) throws FileNotFoundException, SecurityException {
+		String[] paths = seperatedList.split(File.pathSeparator);
 		ArrayList<File> fileList = new ArrayList<File>();
 		
 		ArrayList<String> output = new ArrayList<String>();
 		SimpleEntry<ArrayList<File>, ArrayList<String>> pair = new SimpleEntry<ArrayList<File>, ArrayList<String>>(fileList, output);
 		
+		String fileExtension = (astDir)? "ast" : null;
+		
 		File file;
 		for(String path : paths){
 			file = new File(path);
+			//##################### path is a file
 			if(file.isFile()){
 				fileList.add(file);
-				output.add(outputSubDirectory.getAbsolutePath() + File.separator + file.getName());
+				output.add(targetDirectory.getAbsolutePath() + File.separator + getFileNameWithoutExtension(file.getName()) + OUTPUT_SUFFIX + "1." + ((fileExtension != null)? fileExtension : getDottlessFileExtension(file.getName())));
 			}
-			
+			//##################### path is a Directory
 			else if(file.isDirectory()){
 				String parent = path;
 				try{
@@ -232,11 +244,11 @@ public final class UTIL {
 					for(int i = 0; i < children.length; ++i){
 						child = children[i];
 						if(new File(parent + child).isDirectory())
-							outputSubDirectory = new File(outputSubDirectory.getAbsolutePath() + File.separator + child.toString() + File.separator);
+							targetDirectory = new File(targetDirectory.getAbsolutePath() + File.separator + child.toString() + File.separator);
 						
-						SimpleEntry<ArrayList<File>, ArrayList<String>> other =  seperatedFilesToList(parent + child, outputSubDirectory);
-						fileList.addAll(other.getKey());
-						output.addAll(other.getValue());
+						SimpleEntry<ArrayList<File>, ArrayList<String>> pack =  seperatedFilesToList(parent + child, targetDirectory, astDir);
+						fileList.addAll(pack.getKey());
+						output.addAll(pack.getValue());
 					}
 				}
 				catch (SecurityException e){
@@ -249,5 +261,5 @@ public final class UTIL {
 		
 		return pair;
 	}
-
+	//*******************************************************************************************************************************************************************************************
 }

@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class walker{
+public class walker implements Obfuscator{
 	private ArrayList<String> blacklist;
 	private Map<String, String> obfuscated_names;
 
