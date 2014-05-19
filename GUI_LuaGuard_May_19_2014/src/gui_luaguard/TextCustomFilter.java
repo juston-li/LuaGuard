@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package guipart1;
+package gui_luaguard;
 
 import java.io.File;
 
@@ -12,18 +12,18 @@ import java.io.File;
  *
  * @author willmbp15
  */
-class LuaCustomFilter extends javax.swing.filechooser.FileFilter {
+class TextCustomFilter extends javax.swing.filechooser.FileFilter {
   
   @Override
   public boolean accept(File file) {
     // Allow only directories, or files with ".lua" extension
-    return file.isDirectory() || file.getAbsolutePath().endsWith(".lua");
+    return file.isDirectory() || file.getAbsolutePath().endsWith(".txt");
   }
   @Override
   public String getDescription() {
     // This description will be displayed in the dialog,
     // hard-coded = ugly, should be done via I18N
-    return "Lua documents (*.lua)";
+    return "Text documents (*.txt)";
   }
   
 }

@@ -3,8 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
-package guipart1;
+package gui_luaguard;
 
 import java.io.File;
 
@@ -12,18 +11,19 @@ import java.io.File;
  *
  * @author willmbp15
  */
-class TextCustomFilter extends javax.swing.filechooser.FileFilter {
-  
+class LuaCustomFilter extends javax.swing.filechooser.FileFilter {
+
   @Override
   public boolean accept(File file) {
     // Allow only directories, or files with ".lua" extension
-    return file.isDirectory() || file.getAbsolutePath().endsWith(".txt");
+    return file.isDirectory() || file.getAbsolutePath().endsWith(".lua") || file.getAbsolutePath().endsWith(".Lua");
   }
+
   @Override
   public String getDescription() {
     // This description will be displayed in the dialog,
     // hard-coded = ugly, should be done via I18N
-    return "Text documents (*.txt)";
+    return "Lua documents (*.lua)";
   }
-  
+
 }

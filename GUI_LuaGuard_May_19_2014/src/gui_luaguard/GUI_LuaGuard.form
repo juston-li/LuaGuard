@@ -37,6 +37,8 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jFileChooserGetLuaFolderActionPerformed"/>
       </Events>
     </Component>
+    <Component class="javax.swing.JFileChooser" name="jFileChooserDestinationFolder">
+    </Component>
   </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
@@ -94,60 +96,10 @@
                   <Component id="jLabelLuaIcon" min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
-                          <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="jButtonMakeOutputFile" pref="0" max="32767" attributes="0"/>
-                                      <Component id="jButtonObfuscate" max="32767" attributes="0"/>
-                                  </Group>
-                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Group type="102" attributes="0">
-                                          <Component id="jButtonHelp" min="-2" pref="150" max="-2" attributes="0"/>
-                                          <EmptySpace type="separate" max="-2" attributes="0"/>
-                                          <Component id="jButtonExitProgram" max="32767" attributes="0"/>
-                                      </Group>
-                                      <Component id="jTextFieldMakeOutputFile" max="32767" attributes="0"/>
-                                  </Group>
-                              </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="jLabelGetFileToObfuscate" min="-2" pref="141" max="-2" attributes="0"/>
-                                      <Component id="jButtonGetLuaFile" min="-2" pref="150" max="-2" attributes="0"/>
-                                  </Group>
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Group type="102" attributes="0">
-                                          <EmptySpace max="32767" attributes="0"/>
-                                          <Group type="103" groupAlignment="0" attributes="0">
-                                              <Component id="jLabelImportLuaFolder" min="-2" pref="176" max="-2" attributes="0"/>
-                                              <Group type="102" attributes="0">
-                                                  <Component id="jLabelPart2ofGetLuaFolderLabel" min="-2" pref="147" max="-2" attributes="0"/>
-                                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                                  <Component id="jLabelGetBlackListFile" min="-2" pref="147" max="-2" attributes="0"/>
-                                              </Group>
-                                          </Group>
-                                      </Group>
-                                      <Group type="102" attributes="0">
-                                          <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
-                                          <Component id="jButtonGetLuaFolder" min="-2" pref="150" max="-2" attributes="0"/>
-                                          <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="jButtonGetBlackListFile" max="32767" attributes="0"/>
-                                      </Group>
-                                  </Group>
-                              </Group>
-                          </Group>
-                          <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
-                      </Group>
-                      <Group type="102" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" attributes="0">
                                   <EmptySpace min="-2" pref="101" max="-2" attributes="0"/>
                                   <Component id="jLabelObfuscationOptions" min="-2" pref="253" max="-2" attributes="0"/>
-                              </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <EmptySpace type="separate" max="-2" attributes="0"/>
-                                  <Component id="jCheckBoxLevel1Obfuscate" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <Group type="102" attributes="0">
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -159,6 +111,54 @@
                               </Group>
                           </Group>
                           <EmptySpace max="32767" attributes="0"/>
+                      </Group>
+                      <Group type="102" attributes="0">
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" attributes="0">
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="jCheckBoxLevel1Obfuscate" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <Group type="103" groupAlignment="0" attributes="0">
+                                              <Component id="jLabelGetFileToObfuscate" min="-2" pref="141" max="-2" attributes="0"/>
+                                              <Component id="jButtonGetLuaFile" min="-2" pref="150" max="-2" attributes="0"/>
+                                          </Group>
+                                          <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
+                                          <Component id="jButtonGetLuaFolder" min="-2" pref="150" max="-2" attributes="0"/>
+                                      </Group>
+                                  </Group>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="jButtonGetBlackListFile" alignment="0" max="32767" attributes="0"/>
+                                      <Component id="jButtonDestinationDirectory" alignment="0" max="32767" attributes="0"/>
+                                  </Group>
+                              </Group>
+                              <Group type="102" attributes="0">
+                                  <EmptySpace min="186" pref="186" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="jLabelImportLuaFolder" min="-2" pref="176" max="-2" attributes="0"/>
+                                      <Group type="102" attributes="0">
+                                          <Component id="jLabelPart2ofGetLuaFolderLabel" min="-2" pref="147" max="-2" attributes="0"/>
+                                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                          <Component id="jLabelGetBlackListFile" min="-2" pref="147" max="-2" attributes="0"/>
+                                      </Group>
+                                  </Group>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+                                  <Component id="jButtonObfuscate" min="-2" pref="157" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Group type="102" attributes="0">
+                                          <Component id="jButtonHelp" min="-2" pref="150" max="-2" attributes="0"/>
+                                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                                          <Component id="jButtonExitProgram" max="32767" attributes="0"/>
+                                      </Group>
+                                      <Component id="jTextFieldMakeOutputFile" max="32767" attributes="0"/>
+                                  </Group>
+                              </Group>
+                          </Group>
+                          <EmptySpace min="31" pref="31" max="-2" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -179,36 +179,44 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="jLabelLuaIcon" max="32767" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="jLabelObfuscationOptions" min="-2" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" alignment="1" attributes="0">
-                                  <Group type="103" groupAlignment="1" attributes="0">
-                                      <Group type="102" attributes="0">
-                                          <Component id="jLabelGetBlackListFile" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
+                              <Group type="102" attributes="0">
+                                  <Component id="jLabelObfuscationOptions" min="-2" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Group type="102" alignment="1" attributes="0">
+                                          <Group type="103" groupAlignment="1" attributes="0">
+                                              <Group type="102" attributes="0">
+                                                  <Component id="jLabelGetBlackListFile" min="-2" max="-2" attributes="0"/>
+                                                  <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
+                                              </Group>
+                                              <Group type="102" alignment="1" attributes="0">
+                                                  <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
+                                                  <Component id="jLabelImportLuaFolder" min="-2" max="-2" attributes="0"/>
+                                                  <EmptySpace max="32767" attributes="0"/>
+                                                  <Component id="jLabelPart2ofGetLuaFolderLabel" min="-2" max="-2" attributes="0"/>
+                                                  <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
+                                              </Group>
+                                          </Group>
+                                          <Group type="103" groupAlignment="3" attributes="0">
+                                              <Component id="jButtonGetBlackListFile" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jButtonGetLuaFolder" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          </Group>
                                       </Group>
                                       <Group type="102" alignment="1" attributes="0">
-                                          <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
-                                          <Component id="jLabelImportLuaFolder" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace max="32767" attributes="0"/>
-                                          <Component id="jLabelPart2ofGetLuaFolderLabel" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
+                                          <Component id="jLabelGetFileToObfuscate" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
+                                          <Component id="jButtonGetLuaFile" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
-                                  <Group type="103" groupAlignment="3" attributes="0">
-                                      <Component id="jButtonGetBlackListFile" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="jButtonGetLuaFolder" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  </Group>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Component id="jCheckBoxLevel1Obfuscate" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <Group type="102" alignment="1" attributes="0">
-                                  <EmptySpace max="32767" attributes="0"/>
-                                  <Component id="jLabelGetFileToObfuscate" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
-                                  <Component id="jButtonGetLuaFile" min="-2" max="-2" attributes="0"/>
+                              <Group type="102" attributes="0">
+                                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                  <Component id="jButtonDestinationDirectory" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
-                          <EmptySpace type="separate" max="-2" attributes="0"/>
-                          <Component id="jCheckBoxLevel1Obfuscate" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="jCheckBoxLevel2Obfuscate" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -216,11 +224,10 @@
                           <EmptySpace min="-2" pref="68" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="jTextFieldMakeOutputFile" alignment="3" min="-2" pref="26" max="-2" attributes="0"/>
-                              <Component id="jButtonMakeOutputFile" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jButtonObfuscate" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="jButtonObfuscate" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jButtonExitProgram" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jButtonHelp" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
@@ -240,7 +247,7 @@
         <Component class="javax.swing.JLabel" name="jLabelLuaIcon">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/guipart1/lua.gif"/>
+              <Image iconType="3" name="/gui_luaguard/lua.gif"/>
             </Property>
           </Properties>
         </Component>
@@ -270,7 +277,7 @@
           <Properties>
             <Property name="horizontalAlignment" type="int" value="0"/>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/guipart1/DSD-pku-uo.jpg"/>
+              <Image iconType="3" name="/gui_luaguard/DSD-pku-uo.jpg"/>
             </Property>
           </Properties>
         </Component>
@@ -278,14 +285,6 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="                                                LuaGuard is a joint project between PKU and UO Software developers"/>
           </Properties>
-        </Component>
-        <Component class="javax.swing.JButton" name="jButtonObfuscate">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Obfuscate"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonObfuscateActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="jButtonExitProgram">
           <Properties>
@@ -322,12 +321,12 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonGetBlackListFileActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="jButtonMakeOutputFile">
+        <Component class="javax.swing.JButton" name="jButtonObfuscate">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Make Output File"/>
+            <Property name="text" type="java.lang.String" value="Obfuscate"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonMakeOutputFileActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonObfuscateActionPerformed"/>
           </Events>
         </Component>
         <Component class="javax.swing.JButton" name="jButtonGetLuaFolder">
@@ -375,6 +374,14 @@
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jCheckBoxLevel3ObfuscateActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="jButtonDestinationDirectory">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Destination Directory"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonDestinationDirectoryActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>
