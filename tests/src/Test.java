@@ -5,6 +5,7 @@ import java.util.List;
 import java.io.IOException;
 import java.io.File;
 import java.lang.Process;
+import java.util.*;
 
 public class Test{
 	int testNum,passedTests,obfuscationLevels;
@@ -92,20 +93,32 @@ public class Test{
 
 	public void compareOutput(String originalProgram, String obfuscatedProgram){
 		try {
-			/*Original*/
-			ProcessBuilder pb = new ProcessBuilder("lua", originalProgram);	
+			String origProgName = new File(originalProgram).getName();
+			String obfProgName = new File(obfuscatedProgram).getName();
+
+			//Original
+			ProcessBuilder pb = new ProcessBuilder("lua", origProgName);	
 			pb.redirectOutput(new File("output.txt"));
  			pb.redirectErrorStream(true);
+			pb.directory(new File("test_programs"));
 			Process p = pb.start();	
 			p.waitFor();
 			pb.start();	
 
-			/*Obfuscated*/
-			pb = new ProcessBuilder("lua", obfuscatedProgram);
+			//Obfuscated - need to rename file to original name for same lua errors
+			File obfFile = new File(obfuscatedProgram);
+			File obf2Orig = new File("output/obfuscated/"+origProgName);
+			obfFile.renameTo(obf2Orig);
+			pb = new ProcessBuilder("lua", origProgName);
 			pb.redirectOutput(new File("obfuscated_output.txt"));
 			pb.redirectErrorStream(true);
+			pb.directory(new File("output/obfuscated"));
 			p = pb.start();	
 			p.waitFor();
+			//Move original program back
+			File renamedObfFile = new File("output/obfuscated/"+origProgName);
+			File orig2Obf = new File("output/obfuscated/"+obfProgName);
+			renamedObfFile.renameTo(orig2Obf);
 
 			File diff = new File("diff.txt");
 			pb = new ProcessBuilder("diff", "output.txt", "obfuscated_output.txt");
