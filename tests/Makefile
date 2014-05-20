@@ -1,7 +1,10 @@
-test: Test.java TestOutput.java
-	javac Test.java TestOutput.java
+all: 
+	$(MAKE) -C src
+	mv src/Test.jar ./ 
 
 cleantest:
 	rm -r diff obfuscated
+
 clean:
-	rm -f *.class
+	rm -f Test.jar
+	cd src; $(MAKE) clean
