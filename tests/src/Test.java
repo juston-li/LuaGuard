@@ -138,19 +138,19 @@ public class Test{
 			pb.start();	
 
 			/*Original*/
-			long origStartTime = System.currentTimeMillis();
+			long origStartTime = System.nanoTime();
 			Process p = pb.start();	
 			int i = p.waitFor();
-			long origStopTime = System.currentTimeMillis();
+			long origStopTime = System.nanoTime();
 			origElapsedTime = origStopTime - origStartTime;
 
 			pb = new ProcessBuilder("lua", "obfuscated.lua");
 			
 			/*Obfuscated*/
-			long obfStartTime = System.currentTimeMillis();
+			long obfStartTime = System.nanoTime();
 			p = pb.start();	
 			i = p.waitFor();
-			long obfStopTime = System.currentTimeMillis();
+			long obfStopTime = System.nanoTime();
 			obfElapsedTime = obfStopTime - obfStartTime;
 
 		} catch (IOException e) {
@@ -166,8 +166,8 @@ public class Test{
 			testPass=false;
 
 			System.out.println("[Execution time difference exceeds threshold]");
-			System.out.println("Obfuscated Execution Time: "+obfElapsedTime+" ms");
-			System.out.println("Original Execution Time: "+origElapsedTime+" ms");
+			System.out.println("Obfuscated Execution Time: "+obfElapsedTime+"ns");
+			System.out.println("Original Execution Time: "+origElapsedTime+"ns");
 		}
 	}
 
