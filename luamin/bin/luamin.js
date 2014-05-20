@@ -69,22 +69,25 @@
 				result = minify(snippet);
 				log(result);
 			} catch(error) {
-				log(error.message + '\n');
-				if (isAST) {
-					log('Error: failed to minify. Make sure the AST contains a ' +
-						'`globals` property and is');
-					log('fully compatible with luaparse.');
-				} else { // it’s a snippet or an AST
-					log('Error: failed to minify. Make sure the Lua code is valid.');
-				}
-				log('If you think this is a bug in luamin, please report it:');
-				log('https://github.com/mathiasbynens/luamin/issues/new');
-				log(
-					'\nStack trace using luamin@%s and luaparse@%s:\n',
-					luamin.version,
-					require('luaparse').version
-				);
-				log(error.stack);
+			
+				//log(error.message + '\n');
+				//if (isAST) {
+				//	
+					//log('Error: failed to minify. Make sure the AST contains a ' +
+					//	'`globals` property and is');
+					//log('fully compatible with luaparse.');
+				//	
+				//} else { // it’s a snippet or an AST
+				//	log('Error: failed to unparse. Make sure the Lua code is valid.');
+				//}
+				//log('If you think this is a bug in luamin, please report it:');
+				//log('https://github.com/mathiasbynens/luamin/issues/new');
+				//log(
+				//	'\nStack trace using luamin@%s and luaparse@%s:\n',
+				//	luamin.version,
+				//	require('luaparse').version
+				//);
+				//log(error.stack);
 				return process.exit(1);
 			}
 		});

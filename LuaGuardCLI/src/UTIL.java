@@ -3,16 +3,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.DirectoryNotEmptyException;
-import java.util.AbstractMap;
 import java.util.AbstractMap.SimpleEntry;
-import java.util.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Collection;
+import java.util.LinkedList;
 
-import javax.rmi.CORBA.Util;
-import javax.sql.rowset.serial.SerialArray;
 
 
 public final class UTIL {
@@ -22,7 +18,10 @@ public final class UTIL {
 	//##
 	//#
 	//obfuscators will be registered with LuaGuard by adding an instance to this array List
-	private static ArrayList<Obfuscator> obfuscators = new ArrayList<Obfuscator>();
+	//example of multiple
+	//private final static ArrayList<Obfuscator> obfuscators = new ArrayList<Obfuscator>() {{addAll((Collection<? extends Obfuscator>) new obfus1()); addAll((Collection<? extends Obfuscator>) new obfus2());}};
+	@SuppressWarnings({ "serial", "unchecked" })
+	private final static ArrayList<Obfuscator> obfuscators = new ArrayList<Obfuscator>() {{addAll((Collection<? extends Obfuscator>) new walker()); addAll((Collection<? extends Obfuscator>) new walker());}};
 	//#
 	//##
 	//###

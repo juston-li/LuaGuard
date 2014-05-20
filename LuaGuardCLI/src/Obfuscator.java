@@ -1,13 +1,15 @@
 import java.io.File;
 import java.util.ArrayList;
 
-interface Obfuscator {
-	/*
-	Obfuscator Interface:
+public class Obfuscator {
+	 /*
+	Obfuscator class:
 	This interface specifies the requirements obfuscate an AST file
 	*/
 	
-	void obfuscate(File ast, ArrayList<String> blacklist);
+	public void obfuscate(File ast, ArrayList<String> blacklist) {
+		System.err.println("UNIMPLEMENTED OBFUSCATE METHOD");
+	}
 	/*
 	
 	ast: The ast file to be obfuscated using either walker.js or GSON
