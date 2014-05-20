@@ -1,4 +1,5 @@
-hello.lua
+#List of programs to run tests on
+../Lua/hello.lua
 ../Lua/Account.Lua
 ../Lua/Plot.Lua
 ../Lua/SavingTablesWithCycles.Lua
