@@ -9,4 +9,4 @@ e.g. '-filesize 1.2' ~ Fail test if obfuscated filesize is more than 120% larger
 'make cleantest' to remove test output files
 'make clean' to remove binaries
 
-'test_programs.txt' is a text file with a list of programs to test
+Place lua programs ot test in test_programs folder

@@ -3,7 +3,7 @@ all:
 	mv src/Test.jar ./ 
 
 cleantest:
-	rm -r diff obfuscated
+	rm -r output
 
 clean:
 	rm -f Test.jar
