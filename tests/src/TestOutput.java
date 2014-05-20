@@ -26,7 +26,7 @@ public class TestOutput {
 		if(passedTests != totalTests) {
 			System.out.println(passedTests + "/" + totalTests + " Tests Passed");
 			for(String prog : failedTests) {
-				System.out.println(RED+"[   FAILED   ]"+DEFAULT+prog);
+				System.out.println(RED+"[   FAILED   ] "+DEFAULT+prog);
 			}
 		} else {
 			System.out.println(GREEN+"      All Tests Passed"+DEFAULT);

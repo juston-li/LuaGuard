@@ -1,4 +1,3 @@
 *.class
 *.jar
-diff
-obfuscated
+output

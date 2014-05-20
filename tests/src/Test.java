@@ -25,57 +25,65 @@ public class Test{
 		testOutput = new TestOutput();
 	}
 
-	public void getTests(){
+	public void getObfuscatedPrograms(){
 		try {
-			BufferedReader br = new BufferedReader(new FileReader("test_programs.txt"));
-			String line;
-				while ((line = br.readLine()) != null) {
-   					testPrograms.add(line);
-				}
-			br.close();
+			ProcessBuilder pb = new ProcessBuilder("java", "-jar", "lg.jar", "0", "tests/test_programs",
+				"tests/output/ast", "tests/output/obfuscated");
+			pb.directory(new File("../"));
+			Process p = pb.start();
+			p.waitFor();
 		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public void runTests(){
-		//Main loop through each program and run tests
-		for(String prog : testPrograms) {
-			//Commenting in test_programs
-			if(prog.startsWith("#")){
-				continue;
-			}
+		File dir = new File("test_programs");
+		File[] testPrograms = dir.listFiles();
+		if (testPrograms != null) {
+			for (File prog : testPrograms) {
+				testOutput.printStart(prog.getName());
+				testPass = true;
 
-			testPass = true; 
-			testOutput.printStart(prog);
-			//TODO:Call obfuscator, output moved to current directory as obfuscated.lua
+				//Ugly string manipulations for file paths to Original and obfuscated
+				String progFile = "test_programs/"+prog.getName();
+				String[] array = prog.getName().split("\\.");
+				String filename = array[0];
+				String fileExt = array[1];
+				String ofbProgFile = "output/obfuscated/"+filename+"_obfuscated1."+fileExt;
 
-			/* File redirect seems to increase the measured execution times
-			   Isolate tests by running seperate comparisons for outputs 
-			   and execution time */
-			compareOutput(prog);
-			//no need to run if no time or filesize thresholds given
-			if(execTimeThreshold != 0){ 
-				compareExecutionTime(prog);
-			}
-			if(filesizeThreshold != 0) {
-				compareFileSize(prog);
-			}
+				/* File redirect seems to increase the measured execution times
+				   Isolate tests by running seperate comparisons for outputs
+				   and execution time */
+				compareOutput(progFile,ofbProgFile);
+				//no need to run if no time or filesize thresholds given
+				if(execTimeThreshold != 0){
+					compareExecutionTime(progFile, ofbProgFile);
+				}
+				if(filesizeThreshold != 0) {
+					compareFileSize(progFile, ofbProgFile);
+				}
 
-			if(testPass) {
-				testOutput.printPass();
-				passedTests++;
-			} else {
-				testOutput.printFail();
-				failedTests.add(prog);
-			}
+				if(testPass) {
+					testOutput.printPass();
+					passedTests++;
+				} else {
+					testOutput.printFail();
+					failedTests.add(prog.getName());
+				}
 
-			testNum++;
+				testNum++;
+
+			}
+		} else {
+			System.out.println("No programs to test in test_programs");
 		}
 		testOutput.printResults(passedTests,testNum,failedTests);
 	}
 
-	public void compareOutput(String originalProgram){
+	public void compareOutput(String originalProgram, String obfuscatedProgram){
 		try {
 			/*Original*/
 			ProcessBuilder pb = new ProcessBuilder("lua", originalProgram);	
@@ -85,7 +93,7 @@ public class Test{
 			pb.start();	
 
 			/*Obfuscated*/
-			pb = new ProcessBuilder("lua", "obfuscated.lua");
+			pb = new ProcessBuilder("lua", obfuscatedProgram);
 			pb.redirectOutput(new File("obfuscated_output.txt"));
 			p = pb.start();	
 			p.waitFor();
@@ -105,19 +113,24 @@ public class Test{
 				int dot = fileName.lastIndexOf(".");
     				String progName  = fileName.substring(0, dot);
 
+				//Create output directory to store outputs
+				File outputDir=new File("output");
+				if(!outputDir.exists()){
+					outputDir.mkdir();
+				}
+
 				//Create diff directory to store diffs
-				File diffDir=new File("diff");
+				File diffDir=new File("output/diff");
 				if(!diffDir.exists()){
 					diffDir.mkdir();
 				}
 
 				//Dump diff in files rather than fill terminal
-				File diffDump = new File("diff/diff_"+progName+".txt");
+				File diffDump = new File("output/diff/diff_"+progName+".txt");
 				diff.renameTo(diffDump);
  
 				System.out.println("[Output does not match]");
-				System.out.println("Diff located in diff folder");
-				System.out.println("Obfuscated lua program located in obfuscated folder");
+				System.out.println("Diff, obfuscated lua program and AST located in output folder");
 			}
 
 		} catch (IOException e) {
@@ -127,7 +140,7 @@ public class Test{
 		}
 	}
 
-	public void compareExecutionTime(String originalProgram){
+	public void compareExecutionTime(String originalProgram, String obfuscatedProgram){
 		long origElapsedTime = 1;
 		long obfElapsedTime = 1;
 		try {
@@ -144,7 +157,7 @@ public class Test{
 			long origStopTime = System.nanoTime();
 			origElapsedTime = origStopTime - origStartTime;
 
-			pb = new ProcessBuilder("lua", "obfuscated.lua");
+			pb = new ProcessBuilder("lua", obfuscatedProgram);
 			
 			/*Obfuscated*/
 			long obfStartTime = System.nanoTime();
@@ -171,9 +184,9 @@ public class Test{
 		}
 	}
 
-	public void compareFileSize(String originalProgram){
+	public void compareFileSize(String originalProgram, String obfuscatedProgram){
 		File origFile = new File(originalProgram);
-		File obfFile = new File("obfuscated.lua");
+		File obfFile = new File(obfuscatedProgram);
 		
 		double origLength = origFile.length();
 		double obfLength = obfFile.length();
@@ -191,15 +204,13 @@ public class Test{
 	
 	public void cleanUp(){
 		//TODO:Using files as an intermediary is really inefficient; slow read/write to disk
-		//Change to ByteArrayOutputStream
+		//Change to ByteArrayOutputStream would be better but make using diff harder
 		File diff = new File("diff.txt");
 		File output = new File("output.txt");
-		File obfLua = new File("obfuscated.lua");
 		File obfOutput = new File("obfuscated_output.txt");
 
 		diff.delete();
 		output.delete();
-		obfLua.delete();
 		obfOutput.delete();
 
 		//If all tests passed no diffs, get rid of diff directory
@@ -228,7 +239,7 @@ public class Test{
 		}
 		Test test = new Test(execTime,filesize);
 
-		test.getTests();
+		test.getObfuscatedPrograms();
 		test.runTests();
 		test.cleanUp();
 	}
