@@ -7,7 +7,7 @@ import java.io.File;
 import java.lang.Process;
 
 public class Test{
-	int testNum,passedTests;
+	int testNum,passedTests,obfuscationLevels;
 	List<String> testPrograms;
 	List<String> failedTests;
 	TestOutput testOutput;
@@ -26,11 +26,17 @@ public class Test{
 	}
 
 	public void getObfuscatedPrograms(){
+		obfuscationLevels = 2; //0 and 1
 		try {
 			ProcessBuilder pb = new ProcessBuilder("java", "-jar", "lg.jar", "0", "tests/test_programs",
 				"tests/output/ast", "tests/output/obfuscated");
 			pb.directory(new File("../"));
 			Process p = pb.start();
+			p.waitFor();
+			pb = new ProcessBuilder("java", "-jar", "lg.jar", "1", "tests/test_programs",
+				"tests/output/ast", "tests/output/obfuscated");
+			pb.directory(new File("../"));
+			p = pb.start();
 			p.waitFor();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -44,38 +50,39 @@ public class Test{
 		File[] testPrograms = dir.listFiles();
 		if (testPrograms != null) {
 			for (File prog : testPrograms) {
-				testOutput.printStart(prog.getName());
-				testPass = true;
+				for (int test=1; test <= obfuscationLevels; test++){
+					testOutput.printStart(prog.getName());
+					testPass = true;
 
-				//Ugly string manipulations for file paths to Original and obfuscated
-				String progFile = "test_programs/"+prog.getName();
-				String[] array = prog.getName().split("\\.");
-				String filename = array[0];
-				String fileExt = array[1];
-				String ofbProgFile = "output/obfuscated/"+filename+"_obfuscated1."+fileExt;
+					//Ugly string manipulations for file paths to Original and obfuscated
+					String progFile = "test_programs/"+prog.getName();
+					String[] array = prog.getName().split("\\.");
+					String filename = array[0];
+					String fileExt = array[1];
+					String obfProgFile = "output/obfuscated/"+filename+"_obfuscated"+test+"."+fileExt;
 
-				/* File redirect seems to increase the measured execution times
-				   Isolate tests by running seperate comparisons for outputs
-				   and execution time */
-				compareOutput(progFile,ofbProgFile);
-				//no need to run if no time or filesize thresholds given
-				if(execTimeThreshold != 0){
-					compareExecutionTime(progFile, ofbProgFile);
+					/* File redirect seems to increase the measured execution times
+					   Isolate tests by running seperate comparisons for outputs
+					   and execution time */
+					compareOutput(progFile,obfProgFile);
+					//no need to run if no time or filesize thresholds given
+					if(execTimeThreshold != 0){
+						compareExecutionTime(progFile, obfProgFile);
+					}
+					if(filesizeThreshold != 0) {
+						compareFileSize(progFile, obfProgFile);
+					}
+
+					if(testPass) {
+						testOutput.printPass();
+						passedTests++;
+					} else {
+						testOutput.printFail();
+						String obfFile = new File( obfProgFile).getName();
+						failedTests.add(obfFile);
+					}
+					testNum++;
 				}
-				if(filesizeThreshold != 0) {
-					compareFileSize(progFile, ofbProgFile);
-				}
-
-				if(testPass) {
-					testOutput.printPass();
-					passedTests++;
-				} else {
-					testOutput.printFail();
-					failedTests.add(prog.getName());
-				}
-
-				testNum++;
-
 			}
 		} else {
 			System.out.println("No programs to test in test_programs");
@@ -111,7 +118,7 @@ public class Test{
 				testPass=false;
 
 				//Get filename with and without .lua
-				String fileName = new File(originalProgram).getName();
+				String fileName = new File(obfuscatedProgram).getName();
 				int dot = fileName.lastIndexOf(".");
     				String progName  = fileName.substring(0, dot);
 
@@ -131,8 +138,8 @@ public class Test{
 				File diffDump = new File("output/diff/diff_"+progName+".txt");
 				diff.renameTo(diffDump);
  
-				System.out.println("[Output does not match]");
-				System.out.println("Diff, obfuscated lua program and AST located in output folder");
+				System.out.println("ERROR: Output does not match");
+				System.out.println("Diff, obfuscated program and AST located in output folder");
 			}
 
 		} catch (IOException e) {
@@ -180,7 +187,7 @@ public class Test{
 		if(ratio > execTimeThreshold) {
 			testPass=false;
 
-			System.out.println("[Execution time difference exceeds threshold]");
+			System.out.println("ERROR: Execution time difference exceeds threshold");
 			System.out.println("Obfuscated Execution Time: "+obfElapsedTime+"ns");
 			System.out.println("Original Execution Time: "+origElapsedTime+"ns");
 		}
@@ -198,7 +205,7 @@ public class Test{
 		if(ratio > filesizeThreshold) {
 			testPass=false;
 
-			System.out.println("[Filesize difference exceeds threshold]");
+			System.out.println("ERROR: Filesize difference exceeds threshold");
 			System.out.println("Original File Size: "+origLength+" Bytes");
 			System.out.println("Obfuscated File Size: "+obfLength+" Bytes");
 		}
