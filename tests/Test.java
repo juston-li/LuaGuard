@@ -39,6 +39,7 @@ public class Test{
 	}
 
 	public void runTests(){
+		//Main loop through each program and run tests
 		for(String prog : testPrograms) {
 			testPass = true; 
 			testOutput.printStart(prog);
@@ -99,16 +100,19 @@ public class Test{
 				int dot = fileName.lastIndexOf(".");
     				String progName  = fileName.substring(0, dot);
 
-				//Dump diff and obfuscated lua program in files rather than fill terminal
-				File obf = new File("obfuscated.lua");
-				File diffDump = new File("diff_"+progName+".txt");
-				File obfDump = new File("obfuscated_"+fileName);
-				obf.renameTo(obfDump);
+				//Create diff directory to store diffs
+				File diffDir=new File("diff");
+				if(!diffDir.exists()){
+					diffDir.mkdir();
+				}
+
+				//Dump diff in files rather than fill terminal
+				File diffDump = new File("diff/diff_"+progName+".txt");
 				diff.renameTo(diffDump);
  
 				System.out.println("[Output does not match]");
-				System.out.println("Diff located in "+diffDump.getName());
-				System.out.println("lua program located in "+obfDump.getName());
+				System.out.println("Diff located in diff folder");
+				System.out.println("Obfuscated lua program located in obfuscated folder");
 			}
 
 		} catch (IOException e) {
@@ -183,13 +187,21 @@ public class Test{
 	public void cleanUp(){
 		//TODO:Using files as an intermediary is really inefficient; slow read/write to disk
 		//Change to ByteArrayOutputStream
+		File diff = new File("diff.txt");
 		File output = new File("output.txt");
 		File obfLua = new File("obfuscated.lua");
 		File obfOutput = new File("obfuscated_output.txt");
 
+		diff.delete();
 		output.delete();
 		obfLua.delete();
 		obfOutput.delete();
+
+		//If all tests passed no diffs, get rid of diff directory
+		File diffDir=new File("diff");
+		if(failedTests.size() != 0){
+			diffDir.delete();
+		}
 	}
 
 	public static void main(String []args){
