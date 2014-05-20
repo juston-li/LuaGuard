@@ -1,12 +1,12 @@
 Tests to be run in Unix enviroment
 
-'make' to compile tests
+'make' in this directory to compile test
 
-'java Test' to run test
+'java -jar Test.jar' to run test
 '-filesize #' '-time #' to add filesize or execution time increase thresholds.
 e.g. '-filesize 1.2' ~ Fail test if obfuscated filesize is more than 120% larger
 
 'make cleantest' to remove test output files
-'make clean' to remove test output files and binaries
+'make clean' to remove binaries
 
-'test_programs' is a text file with a list of programs to test
+'test_programs.txt' is a text file with a list of programs to test
