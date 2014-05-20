@@ -1,3 +1,4 @@
+#List of programs to run tests on
 hello.lua
 ../Lua/Account.Lua
 ../Lua/Plot.Lua

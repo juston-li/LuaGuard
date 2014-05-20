@@ -27,7 +27,7 @@ public class Test{
 
 	public void getTests(){
 		try {
-			BufferedReader br = new BufferedReader(new FileReader("test_programs"));
+			BufferedReader br = new BufferedReader(new FileReader("test_programs.txt"));
 			String line;
 				while ((line = br.readLine()) != null) {
    					testPrograms.add(line);
@@ -41,6 +41,11 @@ public class Test{
 	public void runTests(){
 		//Main loop through each program and run tests
 		for(String prog : testPrograms) {
+			//Commenting in test_programs
+			if(prog.startsWith("#")){
+				continue;
+			}
+
 			testPass = true; 
 			testOutput.printStart(prog);
 			//TODO:Call obfuscator, output moved to current directory as obfuscated.lua
