@@ -88,6 +88,7 @@ public class Test{
 			/*Original*/
 			ProcessBuilder pb = new ProcessBuilder("lua", originalProgram);	
 			pb.redirectOutput(new File("output.txt"));
+ 			pb.redirectErrorStream(true);
 			Process p = pb.start();	
 			p.waitFor();
 			pb.start();	
@@ -95,6 +96,7 @@ public class Test{
 			/*Obfuscated*/
 			pb = new ProcessBuilder("lua", obfuscatedProgram);
 			pb.redirectOutput(new File("obfuscated_output.txt"));
+			pb.redirectErrorStream(true);
 			p = pb.start();	
 			p.waitFor();
 
