@@ -27,7 +27,7 @@ public class Test{
 	}
 
 	public void getObfuscatedPrograms(){
-		obfuscationLevels = 2; //0 and 1
+		obfuscationLevels = 1; //0 and 1
 		try {
 			ProcessBuilder pb = new ProcessBuilder("java", "-jar", "lg.jar", "0", "tests/test_programs",
 				"tests/output/ast", "tests/output/obfuscated");
