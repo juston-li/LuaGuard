@@ -24,13 +24,13 @@ public class TestOutput {
 		obfuscationLevel -= 1; //filenames were obfuscationlevel+1
 		System.out.println(GREEN+"***Starting Test Case: Obfuscation Level "+obfuscationLevel+"***"+DEFAULT);
 	}
-	
+
 	public void printResults(int obfuscationLevel, int passedTests, int totalTests, List<String> failedTests){
 		totalTests-=1;
 		obfuscationLevel -= 1; //filenames were obfuscationlevel+1
 		System.out.println("-----------RESULTS-----------");
 		if(passedTests != totalTests) {
-			System.out.println(passedTests + "/" + totalTests + " Tests Passed");
+			System.out.println("     "+passedTests + "/" + totalTests + " Tests Passed");
 			for(String prog : failedTests) {
 				System.out.println(RED+"[   FAILED   ] "+DEFAULT+prog);
 			}
@@ -46,7 +46,7 @@ public class TestOutput {
 			System.out.println(GREEN+"    All Test Cases Passed"+DEFAULT);
 		} else {
 			for (int obfuscationLevel : failedTestCases)
-			System.out.println(RED+"Obfuscation Level "+(obfuscationLevel-1)+" [FAILED]"+DEFAULT);
+			System.out.println(RED+" Obfuscation Level "+(obfuscationLevel-1)+" [FAILED]"+DEFAULT);
 		}
 	}
 }

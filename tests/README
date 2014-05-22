@@ -9,4 +9,7 @@ e.g. '-filesize 1.2' ~ Fail test if obfuscated filesize is more than 120% larger
 'make cleantest' to remove test output files
 'make clean' to remove binaries
 
-Place lua programs ot test in test_programs folder
+Place lua programs to test in test_programs folder
+Use programs with outputs that don't require input(causes testing to hang).
+Programs with errors will error the same but will likely fail output checking due 
+to line location modifications during obfuscation

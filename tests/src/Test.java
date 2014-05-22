@@ -9,7 +9,7 @@ import java.util.*;
 
 public class Test{
 	int testNum, passedTests, obfuscationLevels;
-	List<String> testPrograms, failedTests;
+	List<String> failedTests;
 	List<Integer> failedTestCases;
 	TestOutput testOutput;
 	double execTimeThreshold;
@@ -17,12 +17,8 @@ public class Test{
 	boolean testPass, testCasePass;
 
 	public Test(double execTime, double filesize){
-		testNum=1;
-		passedTests=0;
 		execTimeThreshold = execTime;
 		filesizeThreshold = filesize;
-		testPrograms = new ArrayList<String>();
-		failedTests = new ArrayList<String>();
 		failedTestCases = new ArrayList<Integer>();
 		testOutput = new TestOutput();
 	}
@@ -49,12 +45,17 @@ public class Test{
 		File dir = new File("test_programs");
 		File[] testPrograms = dir.listFiles();
 		if (testPrograms != null) {
+			//Loop through obfuscation levels
 			for (int test=1; test <= obfuscationLevels; test++){
+				//Reset results for each test case
 				testCasePass=true;
 				testNum = 1;
 				passedTests=0;
 				failedTests = new ArrayList<String>();
 				testOutput.printTestCaseStart(test);
+				//Loop through each program for test case
+				//Obfuscated code is stored numerically as xx_obfuscated#.lua
+				//Does NOT overwrite, will continue to increase # for each test run
 				for (File prog : testPrograms) {
 					testOutput.printStart(prog.getName());
 					testPass = true;
@@ -70,7 +71,7 @@ public class Test{
 					   Isolate tests by running seperate comparisons for outputs
 					   and execution time */
 					compareOutput(progFile,obfProgFile);
-					//no need to run if no time or filesize thresholds given
+					//No need to run if no time or filesize thresholds given
 					if(execTimeThreshold != 0){
 						compareExecutionTime(progFile, obfProgFile);
 					}
@@ -202,10 +203,9 @@ public class Test{
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		//TODO: Programs can take as little as several milliseconds with timer fluctuating
-		//      Making a 1ms to 2ms difference a 200% increase. Use nanoseconds for precision? 
+		//execTimeThreshold given as decimal
+		//1.2 would mean 120% longer time is unacceptable
 		double ratio = obfElapsedTime / origElapsedTime;
-		
 		if(ratio > execTimeThreshold) {
 			testPass=false;
 
@@ -221,9 +221,9 @@ public class Test{
 		
 		double origLength = origFile.length();
 		double obfLength = obfFile.length();
-
+		//same as execTimeThreshold, filesize thres given as decimal
+		//1.2 would mean 120% larger is unacceptable
 		double ratio = obfLength / origLength;
-		
 		if(ratio > filesizeThreshold) {
 			testPass=false;
 
@@ -235,7 +235,7 @@ public class Test{
 	
 	public void cleanUp(){
 		//TODO:Using files as an intermediary is really inefficient; slow read/write to disk
-		//Change to ByteArrayOutputStream would be better but make using diff harder
+		//Change to ByteArrayOutputStream would be better but make using system diff harder
 		File diff = new File("diff.txt");
 		File output = new File("output.txt");
 		File obfOutput = new File("obfuscated_output.txt");
