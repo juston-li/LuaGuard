@@ -8,37 +8,36 @@ import java.lang.Process;
 import java.util.*;
 
 public class Test{
-	int testNum,passedTests,obfuscationLevels;
-	List<String> testPrograms;
-	List<String> failedTests;
+	int testNum, passedTests, obfuscationLevels;
+	List<String> testPrograms, failedTests;
+	List<Integer> failedTestCases;
 	TestOutput testOutput;
 	double execTimeThreshold;
 	double filesizeThreshold;
-	boolean testPass;
+	boolean testPass, testCasePass;
 
 	public Test(double execTime, double filesize){
 		testNum=1;
 		passedTests=0;
 		execTimeThreshold = execTime;
 		filesizeThreshold = filesize;
-		failedTests = new ArrayList<String>();;
 		testPrograms = new ArrayList<String>();
+		failedTests = new ArrayList<String>();
+		failedTestCases = new ArrayList<Integer>();
 		testOutput = new TestOutput();
 	}
 
 	public void getObfuscatedPrograms(){
-		obfuscationLevels = 1; //0 and 1
+		//Changes this to add obfuscation levels 
+		obfuscationLevels = 1; //Levels 0 and 1
 		try {
-			ProcessBuilder pb = new ProcessBuilder("java", "-jar", "lg.jar", "0", "tests/test_programs",
-				"tests/output/ast", "tests/output/obfuscated");
-			pb.directory(new File("../"));
-			Process p = pb.start();
-			p.waitFor();
-			pb = new ProcessBuilder("java", "-jar", "lg.jar", "1", "tests/test_programs",
-				"tests/output/ast", "tests/output/obfuscated");
-			pb.directory(new File("../"));
-			p = pb.start();
-			p.waitFor();
+			for (int level = 0; level < obfuscationLevels; level++){
+				ProcessBuilder pb = new ProcessBuilder("java", "-jar", "lg.jar", Integer.toString(level), "tests/test_programs",
+					"tests/output/ast", "tests/output/obfuscated");
+				pb.directory(new File("../"));
+				Process p = pb.start();
+				p.waitFor();
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InterruptedException e) {
@@ -50,8 +49,13 @@ public class Test{
 		File dir = new File("test_programs");
 		File[] testPrograms = dir.listFiles();
 		if (testPrograms != null) {
-			for (File prog : testPrograms) {
-				for (int test=1; test <= obfuscationLevels; test++){
+			for (int test=1; test <= obfuscationLevels; test++){
+				testCasePass=true;
+				testNum = 1;
+				passedTests=0;
+				failedTests = new ArrayList<String>();
+				testOutput.printTestCaseStart(test);
+				for (File prog : testPrograms) {
 					testOutput.printStart(prog.getName());
 					testPass = true;
 
@@ -73,7 +77,6 @@ public class Test{
 					if(filesizeThreshold != 0) {
 						compareFileSize(progFile, obfProgFile);
 					}
-
 					if(testPass) {
 						testOutput.printPass();
 						passedTests++;
@@ -81,14 +84,20 @@ public class Test{
 						testOutput.printFail();
 						String obfFile = new File( obfProgFile).getName();
 						failedTests.add(obfFile);
+						testCasePass=false;
 					}
 					testNum++;
+				}
+				testOutput.printResults(test,passedTests,testNum,failedTests);
+				if(!testCasePass) {
+					failedTestCases.add(test);
+					
 				}
 			}
 		} else {
 			System.out.println("No programs to test in test_programs");
 		}
-		testOutput.printResults(passedTests,testNum,failedTests);
+		testOutput.printGlobalResults(failedTestCases);
 	}
 
 	public void compareOutput(String originalProgram, String obfuscatedProgram){
