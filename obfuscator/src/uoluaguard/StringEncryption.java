@@ -1,17 +1,17 @@
-package Obfuscate;
+package uoluaguard;
 
 public class StringEncryption {
 	public String xor (String  str,int num,byte xorchar)
 	 {
 		 //for(int i=0;i<str.length;i++)
 		 //{
-			 byte [] xor=str.getBytes();                             //°´ÕÕunicodeµÄ±àÂë·½Ê½µÃµ½×Ö·û´®ÖÐµÄ×Ö½ÚÁ÷
+			 byte [] xor=str.getBytes();                             //ï¿½ï¿½ï¿½ï¿½unicodeï¿½Ä±ï¿½ï¿½ë·½Ê½ï¿½Ãµï¿½ï¿½Ö·ï¿½ï¿½Ðµï¿½ï¿½Ö½ï¿½ï¿½ï¿½
 			 for(int j=0;j<xor.length;j++)
 			 {
-				 xor[j]=(byte)(xorchar^xor[j]);                               //ÓÃÃÜ³×¶Ô×Ö·û´®ÖÐ×Ö·û½øÐÐÒì»ò
+				 xor[j]=(byte)(xorchar^xor[j]);                               //ï¿½ï¿½ï¿½Ü³×¶ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			 }
 			 //int choice=num%2;
-			 switch(num%2)                                                   //¸ù¾Ý²ÎÊýµÄÆæÅ¼ÐÔ¾ö¶¨×Ö·û´®µÄ×Ö·ûµÄ±ä»»´ÎÐò
+			 switch(num%2)                                                   //ï¿½ï¿½Ý²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å¼ï¿½Ô¾ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½Ö·ï¿½Ä±ä»»ï¿½ï¿½ï¿½ï¿½
 			 {
 			 case 0:for(int j=0;j<xor.length/2;j++)
 			 		{
@@ -33,12 +33,12 @@ public class StringEncryption {
 			 	default:break;
 		 }
 			//str[i]=new String(xor);
-			 byte [] nxor=change(xor);                                      //µ÷ÓÃ·½·¨¶Ô¿ÉÄÜ³öÏÖµÄ²»¿ÉÏÔÊ¾×Ö·ûÓÃ×ªÒå×Ö·ûÌæ´ú
+			 byte [] nxor=change(xor);                                      //ï¿½ï¿½ï¿½Ã·ï¿½ï¿½ï¿½ï¿½Ô¿ï¿½ï¿½Ü³ï¿½ï¿½ÖµÄ²ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½Ö·ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½
 			 str=new String(nxor);
 			 return str;
 		 //}
 	 }
-	//¶Ô×Ö·û´®ÖÐµÄ¿ØÖÆ×Ö·û²úÉú×ªÒå×Ö·û
+	//ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ÐµÄ¿ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½Ö·ï¿½
 	private byte[]  change(byte [] byt)
 	{
 		int i=0;
