@@ -1,17 +1,109 @@
-package Obfuscate;
+import java.io.File;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
+import com.google.gson.stream.JsonWriter;
 
 public class StringEncryption {
+	
+	private walker TexasRanger = new walker();
+	
+	public void obfuscate(File ast, ArrayList<String> bl){		
+		TexasRanger.addToBlacklist(bl);
+		JsonReader jreader = TexasRanger.read_ast(ast.getAbsolutePath());
+		StringWriter swriter = new StringWriter();
+		JsonWriter jwriter = new JsonWriter(swriter);
+		obf0(jreader, jwriter);
+		TexasRanger.write_ast(swriter, ast.getAbsolutePath());
+
+	}
+	
+	// walks the ast, obfuscates names, and writes it out
+		public void obf0(JsonReader reader, JsonWriter writer){
+			try {
+				int i = 2;
+				while (true){
+					i++;
+					JsonToken token = reader.peek();
+					switch (token){
+						case BEGIN_ARRAY:
+							reader.beginArray();
+							writer.beginArray();
+							break;
+						case END_ARRAY:
+							reader.endArray();
+							writer.endArray();
+							break;
+						case BEGIN_OBJECT:
+							reader.beginObject();
+							writer.beginObject();
+							break;
+						case END_OBJECT:
+							reader.endObject();
+							writer.endObject();
+							break;
+						case NAME:
+							String name = reader.nextName();
+							if (i == 1 && name.equals("name")){
+								i = -1;
+							}
+							writer.name(name);
+							break;
+						case STRING:
+							String str = reader.nextString();
+							if (str.equals("Identifier")){
+								i = 0;
+							} else if (i == 0 && !TexasRanger.check_blacklist(str)){
+								// check if in blacklist and previously obfuscated
+								if (!TexasRanger.check_name(str)){
+									String ob_name = xor(str,(int)Math.random(),(byte)'x');
+									TexasRanger.obfuscated_names.put(str, ob_name);
+									writer.value(ob_name);
+								} else {
+									writer.value(TexasRanger.obfuscated_names.get(str));
+								}
+								i = 2;
+								break;
+							}
+							writer.value(str);
+							break;
+						case NUMBER:
+							String num = reader.nextString();
+							writer.value(new BigDecimal(num));
+							break;
+						case BOOLEAN:
+							boolean bool = reader.nextBoolean();
+							writer.value(bool);
+							break;
+						case NULL:
+							reader.nextNull();
+							writer.nullValue();
+							break;
+						case END_DOCUMENT:
+							return;
+					}
+				}
+			} catch (IOException e){
+				System.err.println(e.getMessage());
+			}
+		}
+	
+	
 	public String xor (String  str,int num,byte xorchar)
 	 {
 		 //for(int i=0;i<str.length;i++)
 		 //{
-			 byte [] xor=str.getBytes();                             //按照unicode的编码方式得到字符串中的字节流
+			 byte [] xor=str.getBytes();                             
 			 for(int j=0;j<xor.length;j++)
 			 {
-				 xor[j]=(byte)(xorchar^xor[j]);                               //用密匙对字符串中字符进行异或
+				 xor[j]=(byte)(xorchar^xor[j]);                             
 			 }
 			 //int choice=num%2;
-			 switch(num%2)                                                   //根据参数的奇偶性决定字符串的字符的变换次序
+			 switch(num%2)                                                   
 			 {
 			 case 0:for(int j=0;j<xor.length/2;j++)
 			 		{
@@ -33,12 +125,12 @@ public class StringEncryption {
 			 	default:break;
 		 }
 			//str[i]=new String(xor);
-			 byte [] nxor=change(xor);                                      //调用方法对可能出现的不可显示字符用转义字符替代
+			 byte [] nxor=change(xor);                                   
 			 str=new String(nxor);
 			 return str;
 		 //}
 	 }
-	//对字符串中的控制字符产生转义字符
+
 	private byte[]  change(byte [] byt)
 	{
 		int i=0;
