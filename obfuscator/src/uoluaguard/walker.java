@@ -47,23 +47,6 @@ public class walker{
 		}
 	}
 
-	// generates a random obfuscated name
-	//------Delete by MengDai(I changed the obuscation funtion to Minimum Lexer Algorithm)----------
-	/*private String getObfuscatedName(){
-		// generate random name and check if valid
-		String name = Long.toHexString(Double.doubleToLongBits(Math.random()));
-
-		// possible collisions start at 2,147,483,648 obfuscated names
-		int i = 0;
-		while (obfuscated_names.containsKey(name) && i < 2147483647){
-			name = Long.toHexString(Double.doubleToLongBits(Math.random()));
-			i++;
-		}
-		return name;
-	}*/
-	
-	//--------End--------
-
 	// constructor
 	public walker(){
 		obfuscated_names = new HashMap<String, String>();
@@ -162,11 +145,10 @@ public class walker{
 							i = 0;
 						} else if (i == 0 && !check_blacklist(str)){
 							// check if in blacklist and previously obfuscated
-							
-							//--------Add by MengDai-------
-							//(use Minimum Lexical Algorithm to produce new name. In this method, we need to write data dictionary.)
-							
-							/*System.out.println(str);
+
+							//TODO:Correspond these two algorithms to obfuscation levels
+							//Minimum Lexical Algorithm
+							//System.out.println(str);
 							if (!check_name(str)){
 								VariablesCount++;
 								MLAobfuscate myMLA = new MLAobfuscate();
@@ -175,19 +157,14 @@ public class walker{
 								writer.value(ob_name);
 							} else {
 								writer.value(obfuscated_names.get(str));
-							}*/
-							
-							//-------------End--------------
-							
-							//--------Add by MengDai--------
-							//(Use Exchange of Letters Algorithm to produce new name, In this method, we don't need to write data dictionary.)
-							
+							}
+							/*
+							// Exchange of Letters Algorithm
 							System.out.println(str);
 							ExchangeOfLetters myExchange = new ExchangeOfLetters();
 							String result = myExchange.EOFProduce(str);
 							writer.value(result);
-							
-							//-----------End----------
+							*/
 							i = 2;
 							break;
 						}

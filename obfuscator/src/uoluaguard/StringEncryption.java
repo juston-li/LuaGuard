@@ -5,13 +5,13 @@ public class StringEncryption {
 	 {
 		 //for(int i=0;i<str.length;i++)
 		 //{
-			 byte [] xor=str.getBytes();                             //����unicode�ı��뷽ʽ�õ��ַ��е��ֽ���
+			 byte [] xor=str.getBytes();
 			 for(int j=0;j<xor.length;j++)
 			 {
-				 xor[j]=(byte)(xorchar^xor[j]);                               //���ܳ׶��ַ����ַ�������
+				 xor[j]=(byte)(xorchar^xor[j]);	//XOR each characther with xorchar byte
 			 }
 			 //int choice=num%2;
-			 switch(num%2)                                                   //��ݲ������ż�Ծ����ַ���ַ�ı任����
+			 switch(num%2)
 			 {
 			 case 0:for(int j=0;j<xor.length/2;j++)
 			 		{
@@ -33,12 +33,12 @@ public class StringEncryption {
 			 	default:break;
 		 }
 			//str[i]=new String(xor);
-			 byte [] nxor=change(xor);                                      //���÷����Կ��ܳ��ֵĲ�����ʾ�ַ���ת���ַ����
-			 str=new String(nxor);
+			 byte [] nxor=change(xor);	//Call change method to ensure all bytes 
+			 str=new String(nxor);		//correlate to viewable ASCII char
 			 return str;
 		 //}
 	 }
-	//���ַ��еĿ����ַ����ת���ַ�
+	//Make sure bytes are letters,numbers or symbols
 	private byte[]  change(byte [] byt)
 	{
 		int i=0;
