@@ -1,15 +1,15 @@
-package uoluaguard;
+package Obfuscate;
 
 public class MLAobfuscate {
 	
-/**
- * Generate a new variable name according to the current number of variable. 
- * For an example, if the number is 4, then the new name is "_d";
- * @param number: The number of names that have been obfuscated.
- * @return: The new name.
- */
+	private static final String[] KeyWords = new String[] { "and", "break", "do", "else", "elseif",
+												"end", "false", "for", "function", "if", "in", "local", 
+												"nil", "not", "or", "repeat", "return", "then", "true",
+												"until", "while"};
+    	
 	public String MLAobfuscateProduce(int number){
 		try{
+			//System.out.println(number);
 			number = number - 1;
 			if(number < 0)
 				return "";
@@ -26,9 +26,10 @@ public class MLAobfuscate {
 				number/=26;
 			}
 			
-			//after Minimum Lexical Algorithm, add "_" after the variable
-			if(answer.length() > 0)
-				answer = "_" + answer;
+			for(int count = 0; count < KeyWords.length; count++){
+				if(KeyWords[count].equals(answer))
+					return "";
+			}
 			return answer;
 	
 		}catch(Exception e){
