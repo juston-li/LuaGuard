@@ -12,17 +12,18 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.math.BigDecimal;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class walker implements Obfuscator{
-	private ArrayList<String> blacklist;
-	private Map<String, String> obfuscated_names;
+public class walker {
+	public ArrayList<String> blacklist;
+	public Map<String, String> obfuscated_names;
 
 	// check if name is in blacklist
 	// true if name is in blacklist
-	private boolean check_blacklist(String name){
+	public boolean check_blacklist(String name){
 		if (blacklist.contains(name)){
 			return true;
 		} else {
@@ -32,7 +33,7 @@ public class walker implements Obfuscator{
 
 	// check if name has been obfuscated
 	// true if name has been obfuscated
-	private boolean check_name(String name){
+	public boolean check_name(String name){
 		if (obfuscated_names.containsKey(name)){
 			return true;
 		} else {
@@ -41,7 +42,7 @@ public class walker implements Obfuscator{
 	}
 
 	// generates a random obfuscated name
-	private String getObfuscatedName(){
+	public String getObfuscatedName(){
 		// generate random name and check if valid
 		String name = Long.toHexString(Double.doubleToLongBits(Math.random()));
 
@@ -225,15 +226,17 @@ public class walker implements Obfuscator{
 		blacklist.add(str);
 	}
 
-	public void obfuscate(File ast, ArrayList<String> bl){
+	public void obfuscate(File ast, ArrayList<String> bl){		
 		walker TexasRanger = new walker();
 		TexasRanger.addToBlacklist(bl);
-		JsonReader jreader = TexasRanger.read_ast(ast.getName());
+		JsonReader jreader = TexasRanger.read_ast(ast.getAbsolutePath());
 		StringWriter swriter = new StringWriter();
 		JsonWriter jwriter = new JsonWriter(swriter);
 		TexasRanger.obf0(jreader, jwriter);
-		TexasRanger.write_ast(swriter, ast.getName());
+		TexasRanger.write_ast(swriter, ast.getAbsolutePath());
+
 	}
+	/*
 	public static void main(String[] args){
 		// create new walker
 		walker TexasRanger = new walker();
@@ -259,4 +262,5 @@ public class walker implements Obfuscator{
 		// // print created ast to stdout
 		// System.out.println(swriter.getBuffer().toString());
 	}
+	*/
 }
