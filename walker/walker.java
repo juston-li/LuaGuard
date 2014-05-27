@@ -42,7 +42,7 @@ public class walker {
 	}
 
 	// generates a random obfuscated name
-	private String getObfuscatedName(){
+	public String getObfuscatedName(){
 		// generate random name and check if valid
 		String name = Long.toHexString(Double.doubleToLongBits(Math.random()));
 
@@ -52,7 +52,7 @@ public class walker {
 			name = Long.toHexString(Double.doubleToLongBits(Math.random()));
 			i++;
 		}
-		return "_"+name;
+		return name;
 	}
 
 	// constructor
