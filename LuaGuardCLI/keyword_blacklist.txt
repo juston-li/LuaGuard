@@ -1,6 +1,8 @@
 and
+arg
 assert
 break
+byte
 collectgarbage
 do
 dofile
@@ -9,13 +11,18 @@ elseif
 end
 error
 false
+find
 for
+format
 function
 getfenv
 getmetatable
 gcinfo
+gsub
 if
 in
+insert
+__index
 ipairs
 loadfile
 loadlib
@@ -24,6 +31,7 @@ local
 next
 nil
 not
+open
 or
 pairs
 pcall
@@ -31,6 +39,8 @@ print
 rawequal
 rawget
 rawset
+read
+rep
 repeat
 require
 return
@@ -44,8 +54,11 @@ type
 unpack
 until
 while
+write
 xpcall
+self
 string
+sub
 package
 os
 io
