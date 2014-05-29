@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gui_luaguard;
 
 import java.awt.Component;
 import java.io.BufferedReader;
@@ -100,7 +99,7 @@ public class GUI_LuaGuard extends javax.swing.JFrame {
 
     jPanelLower.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 153), 4));
 
-    jLabelLuaIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gui_luaguard/lua.gif"))); // NOI18N
+    jLabelLuaIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("lua.gif"))); // NOI18N
 
     jLabelObfuscationOptions.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
     jLabelObfuscationOptions.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -116,7 +115,7 @@ public class GUI_LuaGuard extends javax.swing.JFrame {
     });
 
     jLabelBottomIconImage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-    jLabelBottomIconImage.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gui_luaguard/DSD-pku-uo.jpg"))); // NOI18N
+    jLabelBottomIconImage.setIcon(new javax.swing.ImageIcon(getClass().getResource("/DSD-pku-uo.jpg"))); // NOI18N
 
     jLabelDeveloperCredits.setText("                                                LuaGuard is a joint project between PKU and UO Software developers");
 
@@ -349,6 +348,7 @@ public class GUI_LuaGuard extends javax.swing.JFrame {
       this.arrayList_Lua_Input_Files.add(jFileChooserGetLuaFile.getSelectedFile()
               .getAbsolutePath());
 
+      inputPaths.add(jFileChooserGetLuaFile.getSelectedFile().getAbsolutePath());
       System.out.println(("The File Name Selected is: "
               + jFileChooserGetLuaFile.getSelectedFile().getName()));
 
@@ -474,7 +474,7 @@ public class GUI_LuaGuard extends javax.swing.JFrame {
 
     if (returnVal == JFileChooser.APPROVE_OPTION) {
       File fileSelectedDirectory = jFileChooserGetLuaFolder.getSelectedFile();
-
+      inputPaths.add(jFileChooserGetLuaFolder.getSelectedFile().getAbsolutePath());
       getClassFolders(fileSelectedDirectory, arrayList_Lua_Input_Files);
 
     } else {
@@ -493,43 +493,9 @@ public class GUI_LuaGuard extends javax.swing.JFrame {
 
     int returnVal = jFileChooserGetBlackListFile.showOpenDialog(this);
     if (returnVal == JFileChooser.APPROVE_OPTION) {
-      File infile = jFileChooserGetBlackListFile.getSelectedFile();
-
-      System.out.println("The Black List File Selected is: " + infile);
-      try {
-        String stringTextLine;
-        BufferedReader bufferedReaderReference
-                = new BufferedReader(new FileReader(infile));
-
-        try {
-          while ((stringTextLine = bufferedReaderReference.readLine()) != null) {
-            if (stringTextLine.contains(" ") == true) {
-              String contents = "Invalid file format. Words must not have spaces";
-              System.out.println("blacklist: " + contents);
-              JOptionPane.showMessageDialog(frame, contents);
-              System.out.println("Invalid file format. Words must not have spaces.");
-              arrayList_String_Blacklist.clear();
-              break;
-            }
-
-            if (stringTextLine.trim().length() > 0) {
-              arrayList_String_Blacklist.add(stringTextLine.trim());
-
-            }
-          }
-
-          System.out.println("arrayListStringBlacklist size "
-                  + "inputStreamReference: " + arrayList_String_Blacklist.size());
-          System.out.println(arrayList_String_Blacklist);
-        } catch (IOException ex) {
-          Logger.getLogger(GUI_LuaGuard.class
-                  .getName()).log(Level.SEVERE, null, ex);
-        }
-
-      } catch (FileNotFoundException ex) {
-        Logger.getLogger(GUI_LuaGuard.class
-                .getName()).log(Level.SEVERE, null, ex);
-      }
+      blackListFile = jFileChooserGetBlackListFile.getSelectedFile();
+	  System.out.println("The Black List File Selected is: " + blackListFile);
+		
 
     } else {
       System.out.println("File access cancelled by user.");
@@ -616,6 +582,10 @@ public class GUI_LuaGuard extends javax.swing.JFrame {
     });
   }
 
+  private ArrayList<String> inputPaths = new ArrayList<String>();
+  private File astDir = null;
+  private File outputDir = null;
+  File blackListFile = null;
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JButton jButton4;
   private javax.swing.JButton jButtonDestinationDirectory;
