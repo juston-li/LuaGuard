@@ -24,7 +24,7 @@ public class walker {
 	// check if name is in blacklist
 	// true if name is in blacklist
 	public boolean check_blacklist(String name){
-		if (blacklist.contains(name)){
+		if (blacklist.contains(name) || name.startsWith("lua")){
 			return true;
 		} else {
 			return false;
@@ -42,7 +42,7 @@ public class walker {
 	}
 
 	// generates a random obfuscated name
-	public String getObfuscatedName(){
+	private String getObfuscatedName(){
 		// generate random name and check if valid
 		String name = Long.toHexString(Double.doubleToLongBits(Math.random()));
 
@@ -52,7 +52,7 @@ public class walker {
 			name = Long.toHexString(Double.doubleToLongBits(Math.random()));
 			i++;
 		}
-		return name;
+		return "_"+name;
 	}
 
 	// constructor
