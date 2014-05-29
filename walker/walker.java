@@ -24,7 +24,7 @@ public class walker {
 	// check if name is in blacklist
 	// true if name is in blacklist
 	public boolean check_blacklist(String name){
-		if (blacklist.contains(name) || name.startsWith("lua")||name.startsWith("__")){
+		if (blacklist.contains(name) || name.startsWith("lua")){
 			return true;
 		} else {
 			return false;
