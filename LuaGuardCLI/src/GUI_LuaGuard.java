@@ -5,19 +5,16 @@
  */
 
 import java.awt.Component;
-import java.io.BufferedReader;
 import java.io.File;
-//import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-//import java.io.FileOutputStream;
-import java.io.FileReader;
-//import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.swing.ButtonGroup;
 import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
+import javax.swing.JRadioButton;
 
 public class GUI_LuaGuard extends javax.swing.JFrame {
 
@@ -52,7 +49,6 @@ public class GUI_LuaGuard extends javax.swing.JFrame {
     jFileChooserGetBlackListFile = new javax.swing.JFileChooser();
     jLabel8 = new javax.swing.JLabel();
     jFileChooserGetLuaFolder = new javax.swing.JFileChooser();
-    jFileChooserDestinationFolder = new javax.swing.JFileChooser();
     jPanelLower = new javax.swing.JPanel();
     jLabelLuaIcon = new javax.swing.JLabel();
     jLabelObfuscationOptions = new javax.swing.JLabel();
@@ -69,9 +65,10 @@ public class GUI_LuaGuard extends javax.swing.JFrame {
     jLabelImportLuaFolder = new javax.swing.JLabel();
     jButtonHelp = new javax.swing.JButton();
     jLabelPart2ofGetLuaFolderLabel = new javax.swing.JLabel();
-    jCheckBoxLevel1Obfuscate = new javax.swing.JCheckBox();
-    jCheckBoxLevel2Obfuscate = new javax.swing.JCheckBox();
-    jCheckBoxLevel3Obfuscate = new javax.swing.JCheckBox();
+    jRadioButtonLevel3Obfuscate = new javax.swing.JRadioButton();
+    jRadioButtonLevel0Obfuscate = new javax.swing.JRadioButton();
+    jRadioButtonLevel1Obfuscate = new javax.swing.JRadioButton();
+    jRadioButtonLevel2Obfuscate = new javax.swing.JRadioButton();
     jButtonDestinationDirectory = new javax.swing.JButton();
     jButtonGetAST = new javax.swing.JButton();
     jLabelLuaGuardObfuscatorv10 = new javax.swing.JLabel();
@@ -165,24 +162,30 @@ public class GUI_LuaGuard extends javax.swing.JFrame {
 
     jLabelPart2ofGetLuaFolderLabel.setText("      To Obfuscate");
 
-    jCheckBoxLevel1Obfuscate.setText("Level 1 Obfuscation");
-    jCheckBoxLevel1Obfuscate.addActionListener(new java.awt.event.ActionListener() {
+    jRadioButtonLevel3Obfuscate.setText("Level 3 Obfuscation");
+    jRadioButtonLevel3Obfuscate.addActionListener(new java.awt.event.ActionListener() {
+    	public void actionPerformed(java.awt.event.ActionEvent evt) {
+    		jRadioButtonLevel3ObfuscateActionPerformed(evt);
+    	}
+    });
+    jRadioButtonLevel0Obfuscate.setText("Level 0 Obfuscation");
+    jRadioButtonLevel0Obfuscate.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
-        jCheckBoxLevel1ObfuscateActionPerformed(evt);
+        jRadioButtonLevel0ObfuscateActionPerformed(evt);
       }
     });
 
-    jCheckBoxLevel2Obfuscate.setText("Level 2 Obfuscation");
-    jCheckBoxLevel2Obfuscate.addActionListener(new java.awt.event.ActionListener() {
+    jRadioButtonLevel1Obfuscate.setText("Level 1 Obfuscation");
+    jRadioButtonLevel1Obfuscate.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
-        jCheckBoxLevel2ObfuscateActionPerformed(evt);
+        jRadioButtonLevel1ObfuscateActionPerformed(evt);
       }
     });
 
-    jCheckBoxLevel3Obfuscate.setText("Level 3 Obfuscation");
-    jCheckBoxLevel3Obfuscate.addActionListener(new java.awt.event.ActionListener() {
+    jRadioButtonLevel2Obfuscate.setText("Level 2 Obfuscation");
+    jRadioButtonLevel2Obfuscate.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
-        jCheckBoxLevel3ObfuscateActionPerformed(evt);
+        jRadioButtonLevel2ObfuscateActionPerformed(evt);
       }
     });
 
@@ -215,10 +218,13 @@ public class GUI_LuaGuard extends javax.swing.JFrame {
                 .addComponent(jLabelObfuscationOptions, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE))
               .addGroup(jPanelLowerLayout.createSequentialGroup()
                 .addGap(18, 18, 18)
-                .addComponent(jCheckBoxLevel2Obfuscate))
+                .addComponent(jRadioButtonLevel1Obfuscate))
               .addGroup(jPanelLowerLayout.createSequentialGroup()
                 .addGap(18, 18, 18)
-                .addComponent(jCheckBoxLevel3Obfuscate)))
+                .addComponent(jRadioButtonLevel2Obfuscate)
+              .addGroup(jPanelLowerLayout.createSequentialGroup()
+                .addGap(18, 18, 18)
+                .addComponent(jRadioButtonLevel3Obfuscate))))
             .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
           .addGroup(jPanelLowerLayout.createSequentialGroup()
             .addGroup(jPanelLowerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -227,7 +233,7 @@ public class GUI_LuaGuard extends javax.swing.JFrame {
                 .addGroup(jPanelLowerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                   .addComponent(jLabelGetFileToObfuscate, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
                   .addComponent(jButtonGetLuaFile, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                  .addComponent(jCheckBoxLevel1Obfuscate))
+                  .addComponent(jRadioButtonLevel0Obfuscate))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanelLowerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                   .addComponent(jButtonGetLuaFolder, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
@@ -274,7 +280,7 @@ public class GUI_LuaGuard extends javax.swing.JFrame {
                 .addComponent(jLabelObfuscationOptions)
                 .addGroup(jPanelLowerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                   .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelLowerLayout.createSequentialGroup()
-                    .addGroup(jPanelLowerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanelLowerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                       .addGroup(jPanelLowerLayout.createSequentialGroup()
                         .addComponent(jLabelGetBlackListFile)
                         .addGap(9, 9, 9))
@@ -293,16 +299,18 @@ public class GUI_LuaGuard extends javax.swing.JFrame {
                     .addGap(9, 9, 9)
                     .addComponent(jButtonGetLuaFile)))
                 .addGap(18, 18, 18)
-                .addComponent(jCheckBoxLevel1Obfuscate))
+                .addComponent(jRadioButtonLevel0Obfuscate))
               .addGroup(jPanelLowerLayout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addGroup(jPanelLowerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                   .addComponent(jButtonDestinationDirectory)
                   .addComponent(jButtonGetAST))))
             .addGap(18, 18, 18)
-            .addComponent(jCheckBoxLevel2Obfuscate)
+            .addComponent(jRadioButtonLevel1Obfuscate)
             .addGap(18, 18, 18)
-            .addComponent(jCheckBoxLevel3Obfuscate)
+            .addComponent(jRadioButtonLevel2Obfuscate)
+            .addGap(18, 18, 18)
+            .addComponent(jRadioButtonLevel3Obfuscate)
             .addGap(68, 68, 68)
             .addGroup(jPanelLowerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
               .addComponent(jTextFieldMakeOutputFile, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -318,7 +326,14 @@ public class GUI_LuaGuard extends javax.swing.JFrame {
         .addComponent(jLabelBottomIconImage, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
         .addContainerGap())
     );
-
+    
+    ButtonGroup radio_buttons = new ButtonGroup();
+    radio_buttons.add(jRadioButtonLevel0Obfuscate);
+    radio_buttons.add(jRadioButtonLevel1Obfuscate);
+    radio_buttons.add(jRadioButtonLevel2Obfuscate);
+    radio_buttons.add(jRadioButtonLevel3Obfuscate);
+    jRadioButtonLevel0Obfuscate.setSelected(true);
+    
     jLabelLuaGuardObfuscatorv10.setFont(new java.awt.Font("Malayalam MN", 0, 36)); // NOI18N
     jLabelLuaGuardObfuscatorv10.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
     jLabelLuaGuardObfuscatorv10.setText("LuaGuard Obfuscator v1.0");
@@ -435,8 +450,12 @@ public class GUI_LuaGuard extends javax.swing.JFrame {
 	  //error checking
 	  try{
 		  ArrayList<String> blackList = UTIL.getBlacklist(blackListFile);
-		  String input = getSeperatedList(inputPaths);
-		  UTIL.driver(obfuscationLevel, UTIL.seperatedFilesToList(input, outputDir, false), UTIL.seperatedFilesToList(input, astDir, true), blackList);
+		  if(inputPaths.size() > 0){
+			  if(astDir != null && outputDir != null){
+				  String input = getSeperatedList(inputPaths);
+				  UTIL.driver(obfuscationLevel, UTIL.seperatedFilesToList(input, outputDir, false), UTIL.seperatedFilesToList(input, astDir, true), blackList);
+			  }
+		  }
 
 	  }
 	  catch (FileNotFoundException ex){
@@ -446,13 +465,12 @@ public class GUI_LuaGuard extends javax.swing.JFrame {
 		  ex.printStackTrace();
 	  }
 	  
-    for (int intInputFileIndex = 0; intInputFileIndex
-            < this.arrayList_Lua_Input_Files.size(); intInputFileIndex++) {
+    for (int intInputFileIndex = 0; intInputFileIndex < arrayList_Lua_Input_Files.size(); intInputFileIndex++) {
 
       File f;
 
       try {
-        String stringInputFileFullPath = this.arrayList_Lua_Input_Files.get(intInputFileIndex);
+        String stringInputFileFullPath = arrayList_Lua_Input_Files.get(intInputFileIndex);
 
         String stringInputDirectory = returnDirectoryFromFullPath(stringInputFileFullPath);
 
@@ -497,7 +515,7 @@ public class GUI_LuaGuard extends javax.swing.JFrame {
 
   private void jButtonGetBlackListFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGetBlackListFileActionPerformed
 
-    this.arrayList_String_Blacklist.clear();
+    arrayList_String_Blacklist.clear();
     System.out.println("Get Black List File pressed");
 
     int returnVal = jFileChooserGetBlackListFile.showOpenDialog(this);
@@ -512,32 +530,40 @@ public class GUI_LuaGuard extends javax.swing.JFrame {
 
   }//GEN-LAST:event_jButtonGetBlackListFileActionPerformed
 
-  private void jCheckBoxLevel1ObfuscateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxLevel1ObfuscateActionPerformed
-    if (jCheckBoxLevel1Obfuscate.isSelected()) {
+  private void jRadioButtonLevel3ObfuscateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonLevel0ObfuscateActionPerformed
+	  if (jRadioButtonLevel3Obfuscate.isSelected()) {
+		  System.out.println("Level 3 Obfuscation CheckBox Selected");
+		  obfuscationLevel = 3;
+	  } else {
+		  System.out.println("Level 3 Obfuscation CheckBox Unchecked");
+	  }
+  }//GEN-LAST:event_jRadioButtonLevel3ObfuscateActionPerformed
+  private void jRadioButtonLevel0ObfuscateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonLevel0ObfuscateActionPerformed
+    if (jRadioButtonLevel0Obfuscate.isSelected()) {
+      System.out.println("Level 0 Obfuscation CheckBox Selected");
+      obfuscationLevel = 0;
+    } else {
+      System.out.println("Level 0 Obfuscation CheckBox Unchecked");
+    }
+  }//GEN-LAST:event_jRadioButtonLevel0ObfuscateActionPerformed
+
+  private void jRadioButtonLevel1ObfuscateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonLevel1ObfuscateActionPerformed
+    if (jRadioButtonLevel1Obfuscate.isSelected()) {
       System.out.println("Level 1 Obfuscation CheckBox Selected");
       obfuscationLevel = 1;
     } else {
       System.out.println("Level 1 Obfuscation CheckBox Unchecked");
     }
-  }//GEN-LAST:event_jCheckBoxLevel1ObfuscateActionPerformed
+  }//GEN-LAST:event_jRadioButtonLevel1ObfuscateActionPerformed
 
-  private void jCheckBoxLevel2ObfuscateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxLevel2ObfuscateActionPerformed
-    if (jCheckBoxLevel2Obfuscate.isSelected()) {
+  private void jRadioButtonLevel2ObfuscateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonLevel2ObfuscateActionPerformed
+    if (jRadioButtonLevel2Obfuscate.isSelected()) {
       System.out.println("Level 2 Obfuscation CheckBox Selected");
       obfuscationLevel = 2;
     } else {
       System.out.println("Level 2 Obfuscation CheckBox Unchecked");
     }
-  }//GEN-LAST:event_jCheckBoxLevel2ObfuscateActionPerformed
-
-  private void jCheckBoxLevel3ObfuscateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxLevel3ObfuscateActionPerformed
-    if (jCheckBoxLevel3Obfuscate.isSelected()) {
-      System.out.println("Level 3 Obfuscation CheckBox Selected");
-      obfuscationLevel = 3;
-    } else {
-      System.out.println("Level 3 Obfuscation CheckBox Unchecked");
-    }
-  }//GEN-LAST:event_jCheckBoxLevel3ObfuscateActionPerformed
+  }//GEN-LAST:event_jRadioButtonLevel2ObfuscateActionPerformed
 
   private void jButtonDestinationDirectoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDestinationDirectoryActionPerformed
     System.out.println("Destination Directory Pressed");
@@ -622,10 +648,10 @@ public class GUI_LuaGuard extends javax.swing.JFrame {
   private javax.swing.JButton jButtonGetLuaFolder;
   private javax.swing.JButton jButtonHelp;
   private javax.swing.JButton jButtonObfuscate;
-  private javax.swing.JCheckBox jCheckBoxLevel1Obfuscate;
-  private javax.swing.JCheckBox jCheckBoxLevel2Obfuscate;
-  private javax.swing.JCheckBox jCheckBoxLevel3Obfuscate;
-  private javax.swing.JFileChooser jFileChooserDestinationFolder;
+  private javax.swing.JRadioButton jRadioButtonLevel3Obfuscate;
+  private javax.swing.JRadioButton jRadioButtonLevel0Obfuscate;
+  private javax.swing.JRadioButton jRadioButtonLevel1Obfuscate;
+  private javax.swing.JRadioButton jRadioButtonLevel2Obfuscate;
   private javax.swing.JFileChooser jFileChooserGetBlackListFile;
   private javax.swing.JFileChooser jFileChooserGetLuaFile;
   private javax.swing.JFileChooser jFileChooserGetLuaFolder;
