@@ -1,1 +1,10 @@
-v0.3
+v1.0 Initial Release
+
+Clone the repository:
+git clone git@git.assembla.com:uopku-dsd14s-p2.git
+
+CLI:
+java -jar lg.jar
+
+GUI:
+java -jar lggui.jar
