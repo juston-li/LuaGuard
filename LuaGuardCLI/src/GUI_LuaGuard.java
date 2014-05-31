@@ -8,13 +8,14 @@ import java.awt.Component;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.ButtonGroup;
+import javax.swing.GroupLayout;
 import javax.swing.JFileChooser;
-import javax.swing.JRadioButton;
 
 public class GUI_LuaGuard extends javax.swing.JFrame {
 
@@ -65,10 +66,10 @@ public class GUI_LuaGuard extends javax.swing.JFrame {
     jLabelImportLuaFolder = new javax.swing.JLabel();
     jButtonHelp = new javax.swing.JButton();
     jLabelPart2ofGetLuaFolderLabel = new javax.swing.JLabel();
-    jRadioButtonLevel3Obfuscate = new javax.swing.JRadioButton();
     jRadioButtonLevel0Obfuscate = new javax.swing.JRadioButton();
     jRadioButtonLevel1Obfuscate = new javax.swing.JRadioButton();
     jRadioButtonLevel2Obfuscate = new javax.swing.JRadioButton();
+    jRadioButtonLevel3Obfuscate = new javax.swing.JRadioButton();
     jButtonDestinationDirectory = new javax.swing.JButton();
     jButtonGetAST = new javax.swing.JButton();
     jLabelLuaGuardObfuscatorv10 = new javax.swing.JLabel();
@@ -93,6 +94,7 @@ public class GUI_LuaGuard extends javax.swing.JFrame {
       }
     });
 
+    
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
     jPanelLower.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 153), 4));
@@ -162,13 +164,7 @@ public class GUI_LuaGuard extends javax.swing.JFrame {
 
     jLabelPart2ofGetLuaFolderLabel.setText("      To Obfuscate");
 
-    jRadioButtonLevel3Obfuscate.setText("Level 3 Obfuscation");
-    jRadioButtonLevel3Obfuscate.addActionListener(new java.awt.event.ActionListener() {
-    	public void actionPerformed(java.awt.event.ActionEvent evt) {
-    		jRadioButtonLevel3ObfuscateActionPerformed(evt);
-    	}
-    });
-    jRadioButtonLevel0Obfuscate.setText("Level 0 Obfuscation");
+    jRadioButtonLevel0Obfuscate.setText("No Obfuscation");
     jRadioButtonLevel0Obfuscate.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         jRadioButtonLevel0ObfuscateActionPerformed(evt);
@@ -187,6 +183,12 @@ public class GUI_LuaGuard extends javax.swing.JFrame {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         jRadioButtonLevel2ObfuscateActionPerformed(evt);
       }
+    });
+    jRadioButtonLevel3Obfuscate.setText("Level 3 Obfuscation");
+    jRadioButtonLevel3Obfuscate.addActionListener(new java.awt.event.ActionListener() {
+    	public void actionPerformed(java.awt.event.ActionEvent evt) {
+    		jRadioButtonLevel3ObfuscateActionPerformed(evt);
+    	}
     });
 
     jButtonDestinationDirectory.setText("Destination Directory");
@@ -216,13 +218,16 @@ public class GUI_LuaGuard extends javax.swing.JFrame {
               .addGroup(jPanelLowerLayout.createSequentialGroup()
                 .addGap(101, 101, 101)
                 .addComponent(jLabelObfuscationOptions, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE))
-              .addGroup(jPanelLowerLayout.createSequentialGroup()
+              .addGroup(jPanelLowerLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                .addGap(18, 18, 18)
+                .addComponent(jRadioButtonLevel0Obfuscate))
+              .addGroup(jPanelLowerLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                 .addGap(18, 18, 18)
                 .addComponent(jRadioButtonLevel1Obfuscate))
-              .addGroup(jPanelLowerLayout.createSequentialGroup()
+              .addGroup(jPanelLowerLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                 .addGap(18, 18, 18)
                 .addComponent(jRadioButtonLevel2Obfuscate)
-              .addGroup(jPanelLowerLayout.createSequentialGroup()
+              .addGroup(jPanelLowerLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                 .addGap(18, 18, 18)
                 .addComponent(jRadioButtonLevel3Obfuscate))))
             .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -453,9 +458,27 @@ public class GUI_LuaGuard extends javax.swing.JFrame {
 		  if(inputPaths.size() > 0){
 			  if(astDir != null && outputDir != null){
 				  String input = getSeperatedList(inputPaths);
-				  UTIL.driver(obfuscationLevel, UTIL.seperatedFilesToList(input, outputDir, false), UTIL.seperatedFilesToList(input, astDir, true), blackList);
+				  SimpleEntry<ArrayList<File>, ArrayList<String>> ioMap =  UTIL.seperatedFilesToList(input, outputDir, false);
+				  UTIL.driver(obfuscationLevel, ioMap, UTIL.seperatedFilesToList(input, astDir, true), blackList);
+				  inputPaths = new ArrayList();
+				  int n = ioMap.getKey().size();
+				  
+				  jTextFieldMakeOutputFile.setText(n + ((n==1)? " File " : " Files ") + ((obfuscationLevel > 0)? "Obfuscated!" : "Parsed but not obfuscated"));
+			  }
+			  else{
+				  String s = "";
+				  if (astDir == null && outputDir == null)
+					  s = "Please Specify both the AST directory and the Destination directory";
+				  else
+					  if(astDir == null)
+						  s = "Please Specify the AST directory";
+					  else
+						  s = "Plsase Specify the Destination directory";
+				  jTextFieldMakeOutputFile.setText(s);
 			  }
 		  }
+		  else
+			  jTextFieldMakeOutputFile.setText("Select input files or directories");
 
 	  }
 	  catch (FileNotFoundException ex){
@@ -465,19 +488,7 @@ public class GUI_LuaGuard extends javax.swing.JFrame {
 		  ex.printStackTrace();
 	  }
 	  
-    for (int intInputFileIndex = 0; intInputFileIndex < arrayList_Lua_Input_Files.size(); intInputFileIndex++) {
-
-      File f;
-
-      try {
-        String stringInputFileFullPath = arrayList_Lua_Input_Files.get(intInputFileIndex);
-
-        String stringInputDirectory = returnDirectoryFromFullPath(stringInputFileFullPath);
-
-      } catch (Exception exceptionReference) {
-        exceptionReference.toString();
-      }
-    }
+    
   }//GEN-LAST:event_jButtonObfuscateActionPerformed
 
   public void getClassFolders(File file, ArrayList<String> fileNames) {

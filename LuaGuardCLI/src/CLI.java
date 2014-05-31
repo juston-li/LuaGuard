@@ -152,11 +152,15 @@ public class CLI {
 		
 		System.out.println("LEVEL");
 		System.out.println(TAB + "REQUIRED to obfuscate code");
-		System.out.println(TAB + "Base 10 integer representation of obfuscation level");
+		System.out.println(TAB + "Integer specfying code obfuscation level");
 		System.out.println(TAB + TAB + "0");
 		System.out.println(TAB + TAB + TAB + "Code is minified but not obfuscated. Unnecessary white space is removed." + NL);
 		System.out.println(TAB + TAB + "1");
 		System.out.println(TAB + TAB + TAB + "Name Mangler is performed. In addition to minified code the identifiers are changed to random names" + NL);
+		System.out.println(TAB + TAB + "2");
+		System.out.println(TAB + TAB + TAB + "Exchange of Letters is performed. In addition to minified code the identifiers are changed to random names" + NL);
+		System.out.println(TAB + TAB + "3");
+		System.out.println(TAB + TAB + TAB + "MLA Obfuscate is performed. In addition to minified code the identifiers are changed to random names" + NL);
 		
 		System.out.println("INPUT");
 		System.out.println(TAB + "REQUIRED to obfuscate code");
