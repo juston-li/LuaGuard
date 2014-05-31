@@ -25,7 +25,7 @@ public class Test{
 
 	public void getObfuscatedPrograms(){
 		//Changes this to add obfuscation levels 
-		obfuscationLevels = 2; //Levels 0 and 1
+		obfuscationLevels = 4; //Levels 0-3
 		try {
 			for (int level = 0; level < obfuscationLevels; level++){
 				ProcessBuilder pb = new ProcessBuilder("java", "-jar", "lg.jar", Integer.toString(level), "tests/test_programs",

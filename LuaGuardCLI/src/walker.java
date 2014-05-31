@@ -7,23 +7,21 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.InputStream;
 import java.io.IOException;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class walker extends Obfuscator{
-	private ArrayList<String> blacklist;
-	private Map<String, String> obfuscated_names;
+public class walker {
+	public ArrayList<String> blacklist;
+	public Map<String, String> obfuscated_names;
 
 	// check if name is in blacklist
 	// true if name is in blacklist
-	private boolean check_blacklist(String name){
-		if (blacklist.contains(name)){
+	public boolean check_blacklist(String name){
+		if (blacklist.contains(name) || name.startsWith("lua") || name.startsWith("__")){
 			return true;
 		} else {
 			return false;
@@ -32,7 +30,7 @@ public class walker extends Obfuscator{
 
 	// check if name has been obfuscated
 	// true if name has been obfuscated
-	private boolean check_name(String name){
+	public boolean check_name(String name){
 		if (obfuscated_names.containsKey(name)){
 			return true;
 		} else {
@@ -51,7 +49,7 @@ public class walker extends Obfuscator{
 			name = Long.toHexString(Double.doubleToLongBits(Math.random()));
 			i++;
 		}
-		return name;
+		return "_"+name;
 	}
 
 	// constructor
@@ -225,15 +223,17 @@ public class walker extends Obfuscator{
 		blacklist.add(str);
 	}
 
-	public void obfuscate(File ast, ArrayList<String> bl){
+	public void obfuscate(File ast, ArrayList<String> bl){		
 		walker TexasRanger = new walker();
 		TexasRanger.addToBlacklist(bl);
-		JsonReader jreader = TexasRanger.read_ast(ast.getName());
+		JsonReader jreader = TexasRanger.read_ast(ast.getAbsolutePath());
 		StringWriter swriter = new StringWriter();
 		JsonWriter jwriter = new JsonWriter(swriter);
 		TexasRanger.obf0(jreader, jwriter);
-		TexasRanger.write_ast(swriter, ast.getName());
+		TexasRanger.write_ast(swriter, ast.getAbsolutePath());
+
 	}
+	/*
 	public static void main(String[] args){
 		// create new walker
 		walker TexasRanger = new walker();
@@ -259,4 +259,5 @@ public class walker extends Obfuscator{
 		// // print created ast to stdout
 		// System.out.println(swriter.getBuffer().toString());
 	}
+	*/
 }

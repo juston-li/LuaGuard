@@ -24,6 +24,6 @@ function fastfib(n)
 	return fibs[n]
 end
 
-for n=1,30 do print(fib(n)) end
-for n=1,30 do print(fastfib(n)) end
+for n=1,20 do print(fib(n)) end
+for n=1,20 do print(fastfib(n)) end
  

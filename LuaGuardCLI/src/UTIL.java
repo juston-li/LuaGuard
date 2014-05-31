@@ -1,41 +1,32 @@
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedList;
 
 
 
 public final class UTIL {
 	//*******************************************************************************************************************************************************************************************
-	//####
-	//###
-	//##
-	//#
-	//obfuscators will be registered with LuaGuard by adding an instance to this array List
-	//example of multiple
-	//private final static ArrayList<Obfuscator> obfuscators = new ArrayList<Obfuscator>() {{addAll((Collection<? extends Obfuscator>) new obfus1()); addAll((Collection<? extends Obfuscator>) new obfus2());}};
-	@SuppressWarnings({ "serial", "unchecked" })
-	private final static ArrayList<Obfuscator> obfuscators = new ArrayList<Obfuscator>() {{addAll((Collection<? extends Obfuscator>) new walker()); addAll((Collection<? extends Obfuscator>) new walker());}};
-	//#
-	//##
-	//###
-	//####
-	//*******************************************************************************************************************************************************************************************
+
 	private final static String OUTPUT_SUFFIX = "_obfuscated";
 
 	//*******************************************************************************************************************************************************************************************
 	//main driver for luaguard
 	public static void driver(int obfuscationLevels, SimpleEntry<ArrayList<File>, ArrayList<String>> ioMap, SimpleEntry<ArrayList<File>, ArrayList<String>> astMap, ArrayList<String> blacklist){
-		boolean[] levels = obfuscationLevels(obfuscationLevels);
 		ArrayList<File> ioInput = ioMap.getKey();
 		ArrayList<String> ioOutput = ioMap.getValue();
 		ArrayList<String> astOutput = astMap.getValue();
+		
+		walker obfuscate0 = new walker();
+		ExchangeOfLetters obfuscate1 = new ExchangeOfLetters();
+		MLAobfuscate obfuscate2 = new MLAobfuscate();
 		
 		File ast;
 		String luaOutputPath;
@@ -44,19 +35,26 @@ public final class UTIL {
 			luaOutputPath = ioOutput.get(i);
 
 			if(ast != null){
-				for(int j = 0; j < obfuscators.size(); ++j){
-					if(levels[j])
-						obfuscators.get(j).obfuscate(ast, blacklist);
-				}
+				if(obfuscationLevels == 1)
+					obfuscate0.obfuscate(ast,  blacklist);
+				
+				else if(obfuscationLevels == 2)
+					obfuscate1.obfuscate(ast,  blacklist);
+				
+				else if(obfuscationLevels == 3)
+					obfuscate2.obfuscate(ast,  blacklist);
+					
 				unparse(ast, luaOutputPath);
 			}
 		}
 	}
+	
 	//*******************************************************************************************************************************************************************************************
 	public static void runProcess(File inputRedirect, File outputRedirect, String... commandWithParameters){ //String... is var args, use as many string params or an array of strings
 		try {
 			ProcessBuilder p = new ProcessBuilder(commandWithParameters).redirectInput(inputRedirect).redirectOutput(outputRedirect).redirectError(ProcessBuilder.Redirect.INHERIT);
-			System.out.println(p.command());		
+			//ProcessBuilder p = new ProcessBuilder(commandWithParameters).redirectInput(ProcessBuilder.Redirect.INHERIT).redirectOutput(ProcessBuilder.Redirect.INHERIT).redirectError(ProcessBuilder.Redirect.INHERIT);
+			//System.out.println(p.command());		
 			p.start().waitFor();
 		} catch (InterruptedException e) {
 			System.err.println("Process was interupted. " + commandWithParameters);
@@ -65,7 +63,9 @@ public final class UTIL {
 		}
 	}
 
+
 	//node luamin/node_modules/luaparse/bin/luaparse.js --scope -f lua > ast
+	@SuppressWarnings("resource")
 	private static File parse(File lua, String astPath){
 		String node = "node";
 		String path = "luamin" + File.separator + "node_modules" + File.separator + "luaparse" + File.separator + "bin" + File.separator;
@@ -78,6 +78,30 @@ public final class UTIL {
 		
 		// node luamin/node_modules/luaparse/bin/luaparse.js --scope -f INPUTFILE > OUTPUTFILE
 		UTIL.runProcess(lua, ast, node, path+"luaparse.js", "--scope", "-f", lua.getAbsolutePath(), ">", ast.getAbsolutePath());
+		
+		
+		//Replace the empty parse preceding the actual parse.
+		try {
+			String s = new String(Files.readAllBytes(Paths.get(ast.getAbsolutePath())));
+			s = s.replaceFirst("^(\\{\"type\":\"Chunk\",\"body\":\\[],\"comments\":\\[],\"globals\":\\[]\\}\\s)?", ""); //remove front garbage
+			s = s.replaceAll("(?m)(>:\\s\\[1:0]\\sUnexpected symbol '>' near\\s'<eof>'\\n\\{\"type\":\"Chunk\",\"body\":\\[],\"comments\":\\[],\"globals\":\\[]}\\n)?$", ""); //remove back garbage
+			FileOutputStream f = new FileOutputStream(ast, false);
+			f.write(s.getBytes());
+			f.flush();
+			f.close();
+			
+			//if the empty parse was the only parse revert to the empty parse because it was an empty input file
+			String l = new String(Files.readAllBytes(Paths.get(ast.getAbsolutePath()))).trim();
+			if(l == ""){
+				f = new FileOutputStream(ast, false);
+				f.write(l.getBytes());
+				f.flush();
+				f.close();
+			}
+				
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 		return ast;		
 	}
@@ -95,7 +119,7 @@ public final class UTIL {
 			lua.createNewFile();
 		
 			//node luamin/bin/luamin.js -f INPUTFILE > OUTPUTFILE
-			UTIL.runProcess(ast, lua,  node, path+"luamin.js", "-f", ast.getAbsolutePath(), ">", lua.getAbsolutePath());
+			UTIL.runProcess(ast, lua,  node, path+"luamin.js", "-c", ast.getAbsolutePath(), ">", lua.getAbsolutePath());
 
 		} catch (IOException e) {
 			System.out.println("Was unable to create file " + ast.getAbsolutePath());
@@ -120,21 +144,30 @@ public final class UTIL {
 		}
 		return f;
 	}
-	//*******************************************************************************************************************************************************************************************
-	//returns an array that grows with the obfuscator linked list
-	public static boolean[] obfuscationLevels(int n)  {
-		
-		boolean[] levels = new boolean[obfuscators.size()];
-		Arrays.fill(levels, false);
+	//only used for a debugging method in CLI. Looks up the with the highest suffix from the suggestedPath
+	public static File lookup(String suggestedPath){
+		File f;
+		boolean flag = false;
+		f = new File(suggestedPath);
+		String name;
+		while(f.exists()){
+			if(!flag)
+				flag = true;
+			int n = Integer.valueOf(f.getName().replaceAll("^.*?(_obfuscated)+|(\\..+)?$", "")) + 1; //anycharacters upto the last occurance of _obfuscated. on the right side remove optional dot followed by anything
+			name = getFileNameWithoutExtension(f);
+			name = name.replaceAll("\\d+(\\..+)?$","") + String.valueOf(n); //Looking at the end remove the optional dot followed by anything (.lua) and any digits preceeding
 
-		char[] binLevels = new StringBuffer(Integer.toBinaryString(n)).reverse().toString().toCharArray();
-		int min = Math.min(obfuscators.size(), binLevels.length);
-		
-		for(int i = 0; i < min; ++i)
-			if(binLevels[i] == '1')
-				levels[i] = true;
+			f = new File(f.getParentFile().getAbsolutePath() + File.separator + name + "." + getDottlessFileExtension(suggestedPath));
+		}
+		if(flag){
+			int n = Integer.valueOf(f.getName().replaceAll("^.*?(_obfuscated)+|(\\..+)?$", "")); //anycharacters upto the last occurance of _obfuscated. on the right side remove optional dot followed by anything
+			name = getFileNameWithoutExtension(f);
+			name = name.replaceAll("\\d+(\\..+)?$","") + String.valueOf(n-1); //Looking at the end remove the optional dot followed by anything (.lua) and any digits preceeding
 
-		return levels;
+			f = new File(f.getParentFile().getAbsolutePath() + File.separator + name + "." + getDottlessFileExtension(suggestedPath));
+		}
+			
+		return f;
 	}
 	//*******************************************************************************************************************************************************************************************
 	public static ArrayList<String> getBlacklist(File f) throws FileNotFoundException{
