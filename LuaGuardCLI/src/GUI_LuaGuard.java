@@ -59,7 +59,6 @@ public class GUI_LuaGuard extends javax.swing.JFrame {
     jLabelDeveloperCredits = new javax.swing.JLabel();
     jButtonExitProgram = new javax.swing.JButton();
     jTextFieldMakeOutputFile = new javax.swing.JTextField();
-    jLabelGetBlackListFile = new javax.swing.JLabel();
     jButtonGetBlackListFile = new javax.swing.JButton();
     jButtonObfuscate = new javax.swing.JButton();
     jButtonGetLuaFolder = new javax.swing.JButton();
@@ -135,7 +134,6 @@ public class GUI_LuaGuard extends javax.swing.JFrame {
       }
     });
 
-    jLabelGetBlackListFile.setText("   Get Black List File");
 
     jButtonGetBlackListFile.setText("Get Black List File");
     jButtonGetBlackListFile.addActionListener(new java.awt.event.ActionListener() {
@@ -254,7 +252,7 @@ public class GUI_LuaGuard extends javax.swing.JFrame {
                   .addGroup(jPanelLowerLayout.createSequentialGroup()
                     .addComponent(jLabelPart2ofGetLuaFolderLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                    .addComponent(jLabelGetBlackListFile, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    )))
               .addGroup(jPanelLowerLayout.createSequentialGroup()
                 .addGap(18, 18, 18)
                 .addComponent(jButtonObfuscate, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -286,9 +284,6 @@ public class GUI_LuaGuard extends javax.swing.JFrame {
                 .addGroup(jPanelLowerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                   .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelLowerLayout.createSequentialGroup()
                     .addGroup(jPanelLowerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                      .addGroup(jPanelLowerLayout.createSequentialGroup()
-                        .addComponent(jLabelGetBlackListFile)
-                        .addGap(9, 9, 9))
                       .addGroup(jPanelLowerLayout.createSequentialGroup()
                         .addGap(18, 18, 18)
                         .addComponent(jLabelImportLuaFolder)
@@ -669,7 +664,6 @@ public class GUI_LuaGuard extends javax.swing.JFrame {
   private javax.swing.JLabel jLabel8;
   private javax.swing.JLabel jLabelBottomIconImage;
   private javax.swing.JLabel jLabelDeveloperCredits;
-  private javax.swing.JLabel jLabelGetBlackListFile;
   private javax.swing.JLabel jLabelGetFileToObfuscate;
   private javax.swing.JLabel jLabelImportLuaFolder;
   private javax.swing.JLabel jLabelLuaGuardObfuscatorv10;
